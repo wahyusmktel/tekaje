@@ -12,6 +12,7 @@ export interface StudentProgress {
   theoryCompleted: boolean;
   labCompleted: boolean;
   portfolioCompleted: boolean;
+  gamificationCompleted?: boolean;
   postTestScore: number | null;
   postTestCompleted: boolean;
   finalGrade: number | null;
@@ -61,6 +62,7 @@ interface AuthContextType {
   completeTheory: (meetingId: string) => void;
   completeLab: (meetingId: string) => void;
   completePortfolio: (meetingId: string) => void;
+  completeGamification: (meetingId: string) => void;
   resetProgress: (meetingId: string) => void;
   teacherBypassLocks: boolean;
   setTeacherBypassLocks: (val: boolean) => void;
@@ -76,6 +78,7 @@ const defaultProgress: StudentProgress = {
   theoryCompleted: false,
   labCompleted: false,
   portfolioCompleted: false,
+  gamificationCompleted: false,
   postTestScore: null,
   postTestCompleted: false,
   finalGrade: null,
@@ -291,11 +294,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const unlockNextStep = (meetingId: string, currentStep: number) => {
     updateProgress(meetingId, (prev) => {
       const nextStep = currentStep + 1;
-      const newMax = Math.max(prev.maxUnlockedStep, nextStep);
+      const maxLimit = meetingId === "pertemuan-1" ? 7 : 6;
+      const newMax = Math.min(maxLimit, Math.max(prev.maxUnlockedStep, nextStep));
       return {
         ...prev,
-        currentStep: nextStep <= 6 ? nextStep : prev.currentStep,
-        maxUnlockedStep: newMax <= 6 ? newMax : prev.maxUnlockedStep,
+        currentStep: nextStep <= maxLimit ? nextStep : prev.currentStep,
+        maxUnlockedStep: newMax,
       };
     });
   };
@@ -336,6 +340,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }));
   };
 
+  const completeGamification = (meetingId: string) => {
+    updateProgress(meetingId, (prev) => ({
+      ...prev,
+      gamificationCompleted: true,
+      maxUnlockedStep: Math.max(prev.maxUnlockedStep, 6),
+    }));
+  };
+
   const setPostTestResult = (meetingId: string, score: number) => {
     const passed = score >= 75;
     const meetingNum = meetingId === "pertemuan-1" ? 1 : 2;
@@ -343,7 +355,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     updateProgress(meetingId, (prev) => {
       const preScore = prev.preTestScore ?? score;
       const finalGrade = Math.round(preScore * 0.3 + score * 0.7);
-      const newMax = passed ? 6 : prev.maxUnlockedStep;
+      const targetStep = meetingId === "pertemuan-1" ? 7 : 6;
+      const newMax = passed ? targetStep : prev.maxUnlockedStep;
       const nowStr = new Date().toLocaleDateString("id-ID", {
         day: "numeric",
         month: "long",
@@ -419,6 +432,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         completeTheory,
         completeLab,
         completePortfolio,
+        completeGamification,
         resetProgress,
         teacherBypassLocks,
         setTeacherBypassLocks,

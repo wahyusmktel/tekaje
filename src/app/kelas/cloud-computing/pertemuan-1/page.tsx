@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import LabImage from "@/components/LabImage";
 import InteractiveLabTerminal from "@/components/InteractiveLabTerminal";
-import GuidedStepperHeader from "@/components/GuidedStepperHeader";
+import MeetingSidebarNav, { StepItem } from "@/components/MeetingSidebarNav";
+import CloudSysadminGame from "@/components/CloudSysadminGame";
 import DigitalCertificate from "@/components/DigitalCertificate";
 import UserNavPill from "@/components/UserNavPill";
 import { useAuth } from "@/context/AuthContext";
@@ -41,6 +42,12 @@ import {
   User,
   GraduationCap,
   RotateCcw,
+  Gamepad2,
+  FileQuestion,
+  FileBadge,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Menu,
 } from "lucide-react";
 
 export default function PertemuanSatuPage() {
@@ -55,6 +62,7 @@ export default function PertemuanSatuPage() {
     completeTheory,
     completeLab,
     completePortfolio,
+    completeGamification,
     unlockNextStep,
     teacherBypassLocks,
     resetProgress,
@@ -68,6 +76,69 @@ export default function PertemuanSatuPage() {
 
   const progress = getProgress("pertemuan-1");
   const [currentStep, setCurrentStep] = useState(progress.currentStep || 1);
+
+  // Sidebar show/hide state (desktop can toggle, mobile starts hidden)
+  const [isSidebarOpenDesktop, setIsSidebarOpenDesktop] = useState(true);
+  const [isSidebarOpenMobile, setIsSidebarOpenMobile] = useState(false);
+
+  const steps: StepItem[] = [
+    {
+      number: 1,
+      title: "Pre-Test Awal (Uji Diagnostik)",
+      short: "Pre-Test",
+      type: "Kuis",
+      duration: "5 Menit",
+      icon: FileQuestion,
+    },
+    {
+      number: 2,
+      title: "Teori & Observasi Konsep Virtualisasi",
+      short: "Teori",
+      type: "Teori",
+      duration: "15 Menit",
+      icon: BookOpen,
+    },
+    {
+      number: 3,
+      title: "Web Hands-on Lab Terminal Simulator",
+      short: "Simulator",
+      type: "Lab",
+      duration: "20 Menit",
+      icon: Terminal,
+    },
+    {
+      number: 4,
+      title: "Panduan VirtualBox & Checklist Portofolio",
+      short: "Checklist",
+      type: "Portofolio",
+      duration: "15 Menit",
+      icon: CheckSquare,
+    },
+    {
+      number: 5,
+      title: "Gamifikasi: Cloud SysAdmin Quest",
+      short: "Gamifikasi",
+      type: "Mini-Game",
+      duration: "10 Menit",
+      icon: Gamepad2,
+    },
+    {
+      number: 6,
+      title: "Post-Test Evaluasi Hasil Belajar",
+      short: "Post-Test",
+      type: "Evaluasi",
+      duration: "15 Menit",
+      icon: Award,
+    },
+    {
+      number: 7,
+      title: "Sertifikat Kelulusan Digital",
+      short: "Sertifikat",
+      type: "Kompetensi",
+      duration: "Validasi",
+      icon: FileBadge,
+    },
+  ];
 
   // Pre-Test state
   const [preTestAnswers, setPreTestAnswers] = useState<Record<number, number>>({});
@@ -303,17 +374,81 @@ export default function PertemuanSatuPage() {
         </div>
       </header>
 
-      {/* STICKY GUIDED STEPPER HEADER */}
-      <GuidedStepperHeader
-        currentStep={currentStep}
-        maxUnlockedStep={progress.maxUnlockedStep}
-        onSelectStep={(st) => {
-          setCurrentStep(st);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }}
-        meetingNumber={1}
-        meetingTitle="Pengenalan Virtualisasi & Persiapan VM Ubuntu Server"
-      />
+      {/* SUB-HEADER CONTROL BAR: Toggle Sidebar, Active Step, Prev/Next buttons */}
+      <div className="sticky top-18 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/90 shadow-2xs">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-between gap-3">
+          {/* Left: Sidebar Toggle Button (Desktop & Mobile) + Active Step Title */}
+          <div className="flex items-center gap-3 min-w-0">
+            {/* Desktop Toggle Button */}
+            <button
+              onClick={() => setIsSidebarOpenDesktop(!isSidebarOpenDesktop)}
+              className="hidden lg:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-all cursor-pointer shrink-0 shadow-2xs"
+              title={isSidebarOpenDesktop ? "Sembunyikan Navigasi Daftar Isi" : "Tampilkan Navigasi Daftar Isi"}
+            >
+              {isSidebarOpenDesktop ? (
+                <PanelLeftClose className="h-4 w-4 text-sky-600" />
+              ) : (
+                <PanelLeftOpen className="h-4 w-4 text-sky-600" />
+              )}
+              <span>{isSidebarOpenDesktop ? "Tutup Daftar Isi" : "Buka Daftar Isi"}</span>
+            </button>
+
+            {/* Mobile Toggle Button */}
+            <button
+              onClick={() => setIsSidebarOpenMobile(true)}
+              className="lg:hidden inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-600 text-white text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0"
+            >
+              <Menu className="h-4 w-4" />
+              <span>Daftar Isi ({currentStep}/7)</span>
+            </button>
+
+            <div className="h-5 w-px bg-slate-200 hidden sm:block shrink-0" />
+
+            {/* Current Step Breadcrumb */}
+            <div className="min-w-0 truncate text-xs">
+              <span className="text-slate-400 font-semibold mr-1.5 hidden sm:inline">
+                Langkah {currentStep} dari 7:
+              </span>
+              <span className="font-extrabold text-slate-900 truncate">
+                {steps[currentStep - 1]?.title}
+              </span>
+            </div>
+          </div>
+
+          {/* Right: Quick Previous & Next Buttons */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => goToPrevStep(currentStep)}
+              disabled={currentStep === 1}
+              className="px-2.5 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none text-slate-600 text-xs font-bold transition-all cursor-pointer flex items-center gap-1"
+              title="Langkah Sebelumnya"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              <span className="hidden md:inline">Sebelumnya</span>
+            </button>
+
+            <button
+              onClick={() => goToNextStep(currentStep)}
+              disabled={currentStep === 7}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                currentStep === 7
+                  ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                  : isStepUnlocked(currentStep + 1)
+                  ? "bg-slate-900 hover:bg-slate-800 text-white shadow-2xs"
+                  : "bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200"
+              }`}
+              title="Langkah Selanjutnya"
+            >
+              <span className="hidden md:inline">Selanjutnya</span>
+              {isStepUnlocked(currentStep + 1) ? (
+                <ArrowRight className="h-3.5 w-3.5" />
+              ) : (
+                <Lock className="h-3.5 w-3.5 text-amber-700" />
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* STUDENT NOT LOGGED IN CALLOUT BANNER */}
       {!user.isLoggedIn && (
@@ -336,8 +471,28 @@ export default function PertemuanSatuPage() {
         </div>
       )}
 
-      {/* MAIN STEP CONTENT CONTAINER */}
-      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-8 flex-1 w-full space-y-8">
+      {/* MAIN LAYOUT WRAPPER WITH SIDEBAR NAVIGATION */}
+      <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
+        {/* SIDEBAR NAVIGATION */}
+        <MeetingSidebarNav
+          steps={steps}
+          currentStep={currentStep}
+          maxUnlockedStep={progress.maxUnlockedStep}
+          onSelectStep={(st) => {
+            setCurrentStep(st);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          meetingNumber={1}
+          meetingTitle="Pengenalan Virtualisasi & Persiapan VM Ubuntu Server"
+          isOpenDesktop={isSidebarOpenDesktop}
+          onToggleDesktop={() => setIsSidebarOpenDesktop(!isSidebarOpenDesktop)}
+          isOpenMobile={isSidebarOpenMobile}
+          onCloseMobile={() => setIsSidebarOpenMobile(false)}
+          onOpenMobile={() => setIsSidebarOpenMobile(true)}
+        />
+
+        {/* MAIN STEP CONTENT CONTAINER */}
+        <main className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* ========================================================================= */}
         {/* STEP 1: PRE-TEST DIAGNOSTIK */}
         {/* ========================================================================= */}
@@ -778,7 +933,7 @@ export default function PertemuanSatuPage() {
                   disabled={!checklist.bios || !checklist.wizard || !checklist.network || !checklist.snapshot}
                   className="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <span>Konfirmasi Checklist &amp; Buka Post-Test</span>
+                  <span>Konfirmasi Checklist &amp; Buka Arena Gamifikasi</span>
                   <ArrowRight className="h-4 w-4" />
                 </button>
               </div>
@@ -787,19 +942,55 @@ export default function PertemuanSatuPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* STEP 5: POST-TEST EVALUASI KOMPETENSI */}
+        {/* STEP 5: GAMIFIKASI: CLOUD SYSADMIN QUEST */}
         {/* ========================================================================= */}
         {currentStep === 5 && (
+          <div className="space-y-6 animate-fade-in">
+            <CloudSysadminGame
+              alreadyCompleted={Boolean(progress.gamificationCompleted || isStepUnlocked(6))}
+              onComplete={() => {
+                completeGamification("pertemuan-1");
+                goToNextStep(5);
+              }}
+            />
+
+            {/* Quick navigation below game */}
+            <div className="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
+              <button
+                onClick={() => goToPrevStep(5)}
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold cursor-pointer"
+              >
+                &larr; Kembali ke Checklist Portofolio
+              </button>
+
+              <button
+                onClick={() => {
+                  completeGamification("pertemuan-1");
+                  goToNextStep(5);
+                }}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <span>Lanjut ke Langkah 6: Post-Test Evaluasi</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 6: POST-TEST EVALUASI KOMPETENSI */}
+        {/* ========================================================================= */}
+        {currentStep === 6 && (
           <div className="space-y-6 animate-fade-in">
             <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-2.5">
                   <span className="h-8 w-8 rounded-xl bg-purple-100 text-purple-700 font-extrabold flex items-center justify-center text-sm">
-                    5
+                    6
                   </span>
                   <div>
                     <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
-                      Langkah 5: Post-Test Evaluasi Hasil Belajar
+                      Langkah 6: Post-Test Evaluasi Hasil Belajar
                     </h3>
                     <p className="text-xs text-slate-500">
                       Uji komprehensif pemahaman praktikum. Capai skor minimal KKM 75 untuk membuka sertifikat digital!
@@ -903,10 +1094,10 @@ export default function PertemuanSatuPage() {
                       {postTestScore >= 75 ? (
                         <button
                           type="button"
-                          onClick={() => goToNextStep(5)}
+                          onClick={() => goToNextStep(6)}
                           className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
                         >
-                          <span>Buka Sertifikat Kelulusan Digital (Langkah 6)</span>
+                          <span>Buka Sertifikat Kelulusan Digital (Langkah 7)</span>
                           <ArrowRight className="h-4 w-4" />
                         </button>
                       ) : (
@@ -928,9 +1119,9 @@ export default function PertemuanSatuPage() {
         )}
 
         {/* ========================================================================= */}
-        {/* STEP 6: SERTIFIKAT KOMPETENSI DIGITAL */}
+        {/* STEP 7: SERTIFIKAT KOMPETENSI DIGITAL */}
         {/* ========================================================================= */}
-        {currentStep === 6 && (
+        {currentStep === 7 && (
           <div className="space-y-6 animate-fade-in">
             <DigitalCertificate
               studentName={user.isLoggedIn ? user.name : "Ahmad Fauzan Pratama"}
@@ -975,6 +1166,7 @@ export default function PertemuanSatuPage() {
           </div>
         )}
       </main>
+    </div>
 
       {/* MOBILE-FRIENDLY BOTTOM STICKY NAVIGATION BAR */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-3 shadow-lg">
@@ -994,15 +1186,15 @@ export default function PertemuanSatuPage() {
               Langkah
             </span>
             <span className="font-extrabold text-slate-900">
-              {currentStep} <span className="text-slate-400 font-normal">dari 6</span>
+              {currentStep} <span className="text-slate-400 font-normal">dari 7</span>
             </span>
           </div>
 
           <button
             onClick={() => goToNextStep(currentStep)}
-            disabled={currentStep === 6}
+            disabled={currentStep === 7}
             className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold transition-all ${
-              currentStep === 6
+              currentStep === 7
                 ? "bg-slate-100 text-slate-400 cursor-not-allowed"
                 : isStepUnlocked(currentStep + 1)
                 ? "bg-slate-900 text-white hover:bg-slate-800 shadow-sm"
