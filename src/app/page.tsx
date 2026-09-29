@@ -730,7 +730,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. KEAHLIAN & RUANG LINGKUP MATERI VOKASI: VERTICAL SLIDER SOFT & TERATUR */}
+      {/* 3. KEAHLIAN & RUANG LINGKUP MATERI VOKASI: VERTICAL SLIDER MODULAR TECH */}
       {/* ========================================================================= */}
       <section id="keahlian" className="py-16 md:py-24 bg-white border-b border-slate-200">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
@@ -744,94 +744,133 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Vertical Slider Component (Light & Clean Theme) */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left Column: Clean Vertical Navigation List */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-3">
-              {skillsData.map((item, index) => {
-                const IconComponent = item.icon;
-                const isSelected = activeSkillIndex === index;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSkillIndex(index)}
-                    className={`text-left p-5 rounded-3xl border transition-all cursor-pointer relative overflow-hidden ${
-                      isSelected
-                        ? "bg-sky-50/80 border-sky-300 shadow-md scale-[1.01]"
-                        : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
-                    }`}
-                  >
-                    {isSelected && (
-                      <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-sky-600" />
-                    )}
+          {/* Vertical Slider Component (Modular Square Tech UI) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Column: Tight, Square Navigation List */}
+            <div className="lg:col-span-5 flex flex-col gap-3">
+              {/* Terminal-style header bar */}
+              <div className="flex items-center justify-between px-4 py-2.5 bg-slate-100 border border-slate-200 text-xs font-mono font-bold text-slate-700">
+                <span className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 bg-sky-600"></span>
+                  PILIH DISIPLIN PRAKTIKUM
+                </span>
+                <span className="text-slate-500 font-semibold">0{activeSkillIndex + 1} / 04</span>
+              </div>
 
-                    <div className="flex items-center gap-3.5">
-                      <div
-                        className={`h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 ${
-                          isSelected
-                            ? "bg-sky-600 text-white shadow-sm shadow-sky-600/30"
-                            : "bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        <IconComponent className="h-5 w-5" />
-                      </div>
-
-                      <div className="flex-1 min-w-0">
+              {/* Compact Square Buttons (Tight Spacing, No Stretched Gaps) */}
+              <div className="flex flex-col gap-2">
+                {skillsData.map((item, index) => {
+                  const IconComponent = item.icon;
+                  const isSelected = activeSkillIndex === index;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveSkillIndex(index)}
+                      className={`text-left p-3.5 sm:p-4 border transition-all cursor-pointer relative ${
+                        isSelected
+                          ? "bg-sky-50/70 border-sky-500 border-l-4 border-l-sky-600 shadow-xs"
+                          : "bg-white hover:bg-slate-50 border-slate-200 border-l-4 border-l-transparent text-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        {/* Square Index / Icon Box */}
                         <div
-                          className={`text-[10px] font-bold uppercase tracking-wider ${
-                            isSelected ? "text-sky-700" : "text-slate-400"
+                          className={`h-10 w-10 flex items-center justify-center shrink-0 border ${
+                            isSelected
+                              ? "bg-sky-600 text-white border-sky-600 shadow-xs"
+                              : "bg-slate-50 text-slate-500 border-slate-200"
                           }`}
                         >
-                          {item.category}
+                          <IconComponent className="h-5 w-5" />
                         </div>
-                        <h3
-                          className={`font-bold text-sm sm:text-base leading-snug truncate ${
-                            isSelected ? "text-slate-900" : "text-slate-700"
-                          }`}
-                        >
-                          {item.title}
-                        </h3>
-                      </div>
 
-                      <ChevronRight
-                        className={`h-5 w-5 shrink-0 transition-transform ${
-                          isSelected ? "text-sky-600 translate-x-1" : "text-slate-300"
-                        }`}
-                      />
-                    </div>
-                  </button>
-                );
-              })}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="font-mono text-[10px] font-bold text-slate-400">
+                              0{index + 1}
+                            </span>
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-wider truncate ${
+                                isSelected ? "text-sky-700" : "text-slate-500"
+                              }`}
+                            >
+                              {item.category}
+                            </span>
+                          </div>
+                          <h3
+                            className={`font-bold text-xs sm:text-sm leading-snug truncate ${
+                              isSelected ? "text-slate-900 font-extrabold" : "text-slate-700"
+                            }`}
+                          >
+                            {item.title}
+                          </h3>
+                        </div>
+
+                        <ChevronRight
+                          className={`h-4 w-4 shrink-0 transition-transform ${
+                            isSelected ? "text-sky-600 translate-x-1" : "text-slate-300"
+                          }`}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Bottom Architectural Info Card */}
+              <div className="border border-slate-200 bg-slate-50/80 p-4 text-xs text-slate-600 space-y-2">
+                <div className="flex items-center justify-between font-mono text-[11px]">
+                  <span className="font-bold text-slate-700">KURIKULUM VOKASI TKJ</span>
+                  <span className="text-emerald-700 font-bold flex items-center gap-1.5">
+                    <span className="w-2 h-2 bg-emerald-500"></span>
+                    STANDAR INDUSTRI
+                  </span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-slate-500">
+                  Selaras dengan standar kompetensi kerja nasional (SKKNI) bidang Jaringan Komputer, Server Administrator, dan Cloud Computing.
+                </p>
+              </div>
             </div>
 
-            {/* Right Column: Active Showcase Panel (Clean White Card) */}
+            {/* Right Column: Active Showcase Panel (Square Tech Box) */}
             <div className="lg:col-span-7">
               {(() => {
                 const current = skillsData[activeSkillIndex];
                 return (
-                  <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden flex flex-col h-full animate-fade-in">
-                    {/* Image Header with clean border */}
-                    <div className="relative w-full aspect-[16/9] max-h-[360px] overflow-hidden bg-slate-100">
+                  <div className="bg-white border border-slate-200 shadow-sm flex flex-col animate-fade-in">
+                    {/* Top Console Bar */}
+                    <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 text-white font-mono text-xs border-b border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 bg-emerald-400"></span>
+                        <span className="text-slate-300">LAB://TEKAJE/{current.id.toUpperCase()}</span>
+                      </div>
+                      <span className="text-[10px] text-sky-400 font-bold uppercase tracking-wider">
+                        STATUS: READY TO PRACTICE
+                      </span>
+                    </div>
+
+                    {/* Image Header with Square Frame */}
+                    <div className="relative w-full aspect-[16/9] max-h-[340px] overflow-hidden bg-slate-950 border-b border-slate-200">
                       <Image
                         src={current.image}
                         alt={current.title}
                         fill
-                        className="object-cover transition-transform duration-700 hover:scale-105"
+                        className="object-cover transition-transform duration-700 hover:scale-102"
                         priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
-                      <div className="absolute top-4 left-4">
-                        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-sky-800 shadow-sm border border-slate-200">
+                      <div className="absolute top-3 left-3">
+                        <span className="text-[11px] font-mono font-bold px-3 py-1 bg-slate-900/90 text-white border border-slate-700 shadow-xs">
                           {current.category}
                         </span>
                       </div>
                     </div>
 
                     {/* Content Section */}
-                    <div className="p-6 sm:p-8 space-y-6 flex-1 flex flex-col justify-between">
+                    <div className="p-5 sm:p-7 space-y-6 flex-1 flex flex-col justify-between">
                       <div className="space-y-2">
-                        <h3 className="text-xl sm:text-2xl font-black text-slate-900">
+                        <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                           {current.title}
                         </h3>
                         <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -839,16 +878,16 @@ export default function HomePage() {
                         </p>
                       </div>
 
-                      {/* Competencies Badges */}
-                      <div className="space-y-3">
-                        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                          Kompetensi yang Dipelajari Siswa:
+                      {/* Competencies Badges in Square Grid */}
+                      <div className="space-y-2.5">
+                        <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500">
+                          Target Kompetensi Siswa:
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                           {current.competencies.map((comp, idx) => (
                             <div
                               key={idx}
-                              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700"
+                              className="flex items-center gap-2.5 p-2.5 bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium hover:border-slate-300 transition-colors"
                             >
                               <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                               <span className="truncate">{comp}</span>
@@ -857,14 +896,14 @@ export default function HomePage() {
                         </div>
                       </div>
 
-                      {/* Action CTA */}
-                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-xs text-slate-400">
-                          SMK Telkom Lampung &bull; Lab Praktikum TKJ
-                        </span>
+                      {/* Action CTA with Square Borders */}
+                      <div className="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                        <div className="font-mono text-xs text-slate-500">
+                          VER: 2026.1 &bull; HANDS-ON TERMINAL CLI
+                        </div>
                         <Link
                           href={current.link}
-                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-all shadow-md cursor-pointer"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-all shadow-xs cursor-pointer border border-sky-600"
                         >
                           <span>{current.ctaText}</span>
                           <ArrowRight className="h-4 w-4" />
@@ -880,7 +919,7 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. BAGAIMANA SISTEM INI MEMBANTU SISWA: VERTICAL SLIDER BERSIH & TERANG */}
+      {/* 4. BAGAIMANA SISTEM INI MEMBANTU SISWA: VERTICAL SLIDER MODULAR TECH */}
       {/* ========================================================================= */}
       <section id="alur-belajar" className="py-16 md:py-24 bg-slate-50/80 border-b border-slate-200">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
@@ -894,66 +933,84 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Clean Light-Mode Vertical Slider Container */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left Nav: Vertical Step Buttons with Clean Border & Active State */}
-            <div className="lg:col-span-5 flex flex-col justify-between gap-3">
-              {workflowData.map((item, idx) => {
-                const IconComp = item.icon;
-                const isSelected = activeWorkflowIndex === idx;
-                return (
-                  <button
-                    key={item.step}
-                    onClick={() => setActiveWorkflowIndex(idx)}
-                    className={`text-left p-5 rounded-3xl border transition-all cursor-pointer relative ${
-                      isSelected
-                        ? "bg-white border-sky-400 text-slate-900 shadow-md scale-[1.01]"
-                        : "bg-white/60 hover:bg-white border-slate-200 text-slate-600"
-                    }`}
-                  >
-                    {isSelected && (
-                      <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-sky-600 rounded-l" />
-                    )}
+          {/* Clean Modular Square Vertical Slider */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Nav: Vertical Step Buttons with Square Border & Tight Spacing */}
+            <div className="lg:col-span-5 flex flex-col gap-3">
+              {/* Header bar */}
+              <div className="flex items-center justify-between px-4 py-2.5 bg-white border border-slate-200 text-xs font-mono font-bold text-slate-700">
+                <span className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 bg-sky-600"></span>
+                  ALUR PEMBELAJARAN
+                </span>
+                <span className="text-slate-500 font-semibold">TAHAP 0{activeWorkflowIndex + 1} / 04</span>
+              </div>
 
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`h-10 w-10 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0 ${
-                          isSelected
-                            ? "bg-sky-600 text-white shadow-sm shadow-sky-600/30"
-                            : "bg-slate-100 text-slate-500"
-                        }`}
-                      >
-                        {item.step}
+              {/* Tight Step Stack (No Stretched Gaps) */}
+              <div className="flex flex-col gap-2">
+                {workflowData.map((item, idx) => {
+                  const isSelected = activeWorkflowIndex === idx;
+                  return (
+                    <button
+                      key={item.step}
+                      onClick={() => setActiveWorkflowIndex(idx)}
+                      className={`text-left p-3.5 sm:p-4 border transition-all cursor-pointer relative ${
+                        isSelected
+                          ? "bg-white border-sky-500 border-l-4 border-l-sky-600 shadow-xs"
+                          : "bg-white/70 hover:bg-white border-slate-200 border-l-4 border-l-transparent text-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3.5">
+                        <div
+                          className={`h-9 w-9 border flex items-center justify-center font-mono font-bold text-xs shrink-0 ${
+                            isSelected
+                              ? "bg-sky-600 text-white border-sky-600 shadow-xs"
+                              : "bg-slate-100 text-slate-600 border-slate-200"
+                          }`}
+                        >
+                          0{item.step}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-xs sm:text-sm text-slate-900 leading-snug">
+                            {item.title}
+                          </h4>
+                          <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">
+                            {item.subtitle}
+                          </p>
+                        </div>
+
+                        <ChevronRight
+                          className={`h-4 w-4 shrink-0 transition-transform ${
+                            isSelected ? "text-sky-600 translate-x-1" : "text-slate-300"
+                          }`}
+                        />
                       </div>
+                    </button>
+                  );
+                })}
+              </div>
 
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
-                          {item.title}
-                        </h4>
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-1">
-                          {item.subtitle}
-                        </p>
-                      </div>
-
-                      <ChevronRight
-                        className={`h-4 w-4 shrink-0 transition-transform ${
-                          isSelected ? "text-sky-600 translate-x-1" : "text-slate-300"
-                        }`}
-                      />
-                    </div>
-                  </button>
-                );
-              })}
+              {/* Bottom Architectural Card */}
+              <div className="border border-slate-200 bg-white p-4 text-xs text-slate-600 space-y-2">
+                <div className="flex items-center justify-between font-mono text-[11px]">
+                  <span className="font-bold text-slate-700">SISTEM KELULUSAN MANDIRI</span>
+                  <span className="text-sky-700 font-bold">100% TERARAH</span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-slate-500">
+                  Guru dapat memonitor progres siswa secara real-time melalui dashboard manajemen kelas dan log pengerjaan lab.
+                </p>
+              </div>
             </div>
 
-            {/* Right Display: Active Showcase Card */}
+            {/* Right Display: Active Showcase Card with Square Borders */}
             <div className="lg:col-span-7">
               {(() => {
                 const curr = workflowData[activeWorkflowIndex];
                 return (
-                  <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col justify-between h-full space-y-6 shadow-md animate-fade-in">
-                    {/* Active Image */}
-                    <div className="relative w-full aspect-[16/9] max-h-[340px] rounded-2xl overflow-hidden border border-slate-200">
+                  <div className="bg-white border border-slate-200 p-5 sm:p-7 flex flex-col justify-between space-y-6 shadow-sm animate-fade-in">
+                    {/* Active Image with Square Frame */}
+                    <div className="relative w-full aspect-[16/9] max-h-[340px] overflow-hidden border border-slate-200 bg-slate-900">
                       <Image
                         src={curr.image}
                         alt={curr.title}
@@ -961,30 +1018,33 @@ export default function HomePage() {
                         className="object-cover"
                         priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
 
-                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-600 text-white shadow-sm">
-                          Langkah {curr.step} dari 4
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white font-mono text-xs">
+                        <span className="font-bold px-3 py-1 bg-sky-600 text-white border border-sky-500">
+                          TAHAP {curr.step} DARI 4
                         </span>
-                        <span className="text-xs text-slate-100 hidden sm:inline drop-shadow">
-                          Platform Praktikum Mandiri
+                        <span className="text-slate-200 hidden sm:inline text-[11px]">
+                          PLATFORM PRAKTIKUM VOKASI
                         </span>
                       </div>
                     </div>
 
                     {/* Step Description & Key Points */}
                     <div className="space-y-4">
-                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900">
+                      <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
                         {curr.title}
                       </h3>
                       <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                         {curr.description}
                       </p>
 
-                      <div className="space-y-2 pt-2">
+                      <div className="space-y-2 pt-1">
                         {curr.points.map((pt, i) => (
-                          <div key={i} className="flex items-center gap-2.5 text-xs text-slate-700">
+                          <div
+                            key={i}
+                            className="flex items-center gap-2.5 p-2.5 bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium"
+                          >
                             <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                             <span>{pt}</span>
                           </div>
