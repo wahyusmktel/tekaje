@@ -44,18 +44,18 @@ export default function CloudComputingSyllabusPage() {
       pertemuan: 2,
       title: "Instalasi Sistem Operasi Ubuntu Server 22.04 LTS (CLI Mode) & Partisi",
       alokasi: "4 JP (180 Menit)",
-      status: "Segera Hadir",
-      statusColor: "bg-slate-100 text-slate-600 border-slate-200",
+      status: "Aktif",
+      statusColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
       description:
         "Langkah demi langkah instalasi OS Ubuntu Server headless tanpa GUI, pemilihan konfigurasi bahasa, partisi disk (LVM vs Standard), pembuatan akun admin server, dan instalasi paket dasar OpenSSH.",
-      href: "#",
+      href: "/kelas/cloud-computing/pertemuan-2",
       topics: [
         "Navigasi Text-based Installer Ubuntu Subiquity",
         "Skema Partisi Penyimpanan Root (/) & Swap",
         "Pengaturan Akun Non-Root & Sudoers",
         "First Login ke Command Line Interface (CLI)",
       ],
-      active: false,
+      active: true,
     },
     {
       pertemuan: 3,
@@ -378,7 +378,7 @@ export default function CloudComputingSyllabusPage() {
                         href={item.href}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs shadow-sm transition-all"
                       >
-                        <span>Buka Materi Pertemuan 1</span>
+                        <span>Buka Materi Pertemuan {item.pertemuan}</span>
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     ) : (
