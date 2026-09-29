@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import UserNavPill from "@/components/UserNavPill";
 import {
@@ -27,9 +28,212 @@ import {
   UserCheck,
   Send,
   Sliders,
+  Menu,
+  X,
+  Smartphone,
+  Check,
+  MessageCircle,
+  Video,
+  Globe,
+  Play,
+  Share2,
 } from "lucide-react";
 
+function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+      <path d="M9 18c-4.51 2-5-2-7-2" />
+    </svg>
+  );
+}
+
+function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
+
+function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+      <polygon points="10 15 15 12 10 9 10 15" fill="currentColor" />
+    </svg>
+  );
+}
+
 export default function HomePage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSkillIndex, setActiveSkillIndex] = useState(0);
+  const [activeWorkflowIndex, setActiveWorkflowIndex] = useState(0);
+
+  // Quick message state
+  const [contactName, setContactName] = useState("");
+  const [contactClass, setContactClass] = useState("XII TKJ 1");
+  const [contactMessage, setContactMessage] = useState("");
+
+  const handleSendWhatsApp = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!contactMessage.trim()) return;
+    const text = `Halo Pak Wahyu, perkenalkan saya ${contactName || "Siswa"} dari kelas ${contactClass}. Pesan: ${contactMessage}`;
+    const url = `https://wa.me/6282185903635?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
+  };
+
+  // Keahlian & Ruang Lingkup Materi Vokasi
+  const skillsData = [
+    {
+      id: "cloud",
+      title: "Administrasi Cloud Computing & Virtualisasi",
+      category: "Infrastruktur Cloud",
+      image: "/images/cloud-datacenter.jpg",
+      icon: Cloud,
+      color: "from-sky-500 to-blue-600",
+      accent: "text-sky-600 bg-sky-50 border-sky-200",
+      description:
+        "Penguasaan teknologi virtualisasi server industri, hypervisor type-1 dan type-2 (KVM, Proxmox VE, VirtualBox), manajemen instance cloud IaaS, serta alokasi resource vCPU, vRAM, dan virtual storage secara efisien.",
+      competencies: [
+        "Arsitektur Hypervisor & Virtual Machine Orchestration",
+        "Setup VM Ubuntu Server 22.04 LTS Headless",
+        "Virtual Storage Partitioning & Snapshot Checkpoint",
+        "Topologi Jaringan Virtual NAT, Bridged & Internal Network",
+      ],
+      link: "/kelas/cloud-computing",
+      ctaText: "Pelajari Modul Cloud",
+    },
+    {
+      id: "linux",
+      title: "Administrasi Sistem Jaringan (Linux Server ASJ)",
+      category: "Sistem Operasi Server",
+      image: "/images/linux-sysadmin.jpg",
+      icon: Server,
+      color: "from-amber-500 to-orange-600",
+      accent: "text-amber-600 bg-amber-50 border-amber-200",
+      description:
+        "Konfigurasi dan pemeliharaan layanan server mandiri berbasis distro Debian dan Ubuntu Server: DNS Server (BIND9), Web Server (Nginx & Apache), Database Server (MariaDB), serta otomasi script Bash CLI.",
+      competencies: [
+        "Manajemen User, Permission chmod/chown & Sudoers",
+        "Konfigurasi Web Server Nginx & Multi Virtual Host",
+        "Setup Database MariaDB & Manajemen Privilese SQL",
+        "Pemantauan Beban Sistem (top, htop, systemd service)",
+      ],
+      link: "#daftar-kelas",
+      ctaText: "Lihat Silabus ASJ",
+    },
+    {
+      id: "network",
+      title: "Infrastruktur Jaringan & Routing Dinamis (AIJ)",
+      category: "Routing & Switching Enterprise",
+      image: "/images/network-routing.jpg",
+      icon: Network,
+      color: "from-emerald-500 to-teal-600",
+      accent: "text-emerald-600 bg-emerald-50 border-emerald-200",
+      description:
+        "Perancangan topologi jaringan skala enterprise menggunakan RouterBOARD MikroTik dan switch manageable: implementasi routing dinamis OSPF dan BGP, VLAN Trunking 802.1Q, Firewall Filter, dan Quality of Service (QoS).",
+      competencies: [
+        "VLAN Trunking, Inter-VLAN Routing & Bridge Port",
+        "Routing Dinamis OSPF Single & Multi Area",
+        "Mangle, NAT Rule, & Firewall Filtering Policy",
+        "Bandwidth Management Queue Tree & Simple Queue",
+      ],
+      link: "#daftar-kelas",
+      ctaText: "Lihat Silabus AIJ",
+    },
+    {
+      id: "security",
+      title: "Keamanan Jaringan & Cyber Security",
+      category: "Defensive Security",
+      image: "/images/cyber-security.jpg",
+      icon: ShieldCheck,
+      color: "from-purple-500 to-indigo-600",
+      accent: "text-purple-600 bg-purple-50 border-purple-200",
+      description:
+        "Penerapan standar keamanan sistem jaringan vokasi: hardening akses remote SSH menggunakan Public Key Encryption, proteksi port scanning, audit integritas server, dan implementasi tunnel VPN WireGuard terenkripsi.",
+      competencies: [
+        "SSH Hardening & Autentikasi Kunci Kriptografi",
+        "Konfigurasi Firewall UFW & Port Security Rules",
+        "Audit Vulnerability Port Scanning via Nmap",
+        "Enkripsi Jalur Remote dengan VPN WireGuard",
+      ],
+      link: "#daftar-kelas",
+      ctaText: "Lihat Silabus Keamanan",
+    },
+  ];
+
+  // Bagaimana Sistem Pembelajaran Ini Membantu Siswa
+  const workflowData = [
+    {
+      step: 1,
+      title: "Pembelajaran Terarah & Berbasis Tantangan (Guided Stepper)",
+      subtitle: "Setiap langkah dirancang urut agar siswa tidak bingung",
+      image: "/images/stepper-roadmap.jpg",
+      icon: Layers,
+      description:
+        "Siswa mengikuti roadmap pembelajaran langkah demi langkah mulai dari Pre-Test diagnostik, pendalaman materi teori, praktikum laboratorium, unggah portofolio tugas, hingga Post-Test evaluasi. Tahap berikutnya hanya terbuka setelah tantangan terselesaikan.",
+      points: [
+        "Gembok otomatis untuk memastikan siswa mengikuti alur berurutan",
+        "Soal interaktif langsung dikoreksi otomatis dengan skor instan",
+        "Checklist checkpoint portofolio praktikum mandiri",
+      ],
+    },
+    {
+      step: 2,
+      title: "Hands-on Virtual Linux Terminal (Langsung di Browser)",
+      subtitle: "Bebas bereksperimen perintah tanpa takut merusak sistem",
+      image: "/images/student-lab.jpg",
+      icon: Terminal,
+      description:
+        "Siswa tidak perlu repot melakukan instalasi software berat di laptop masing-masing. Website ini menyediakan terminal simulator interaktif dengan fitur salin perintah 1-klik, respons feedback otomatis, dan output real-time menyerupai server Ubuntu asli.",
+      points: [
+        "Tombol salin 1-klik untuk semua baris perintah Ubuntu",
+        "Simulator CLI interaktif dengan umpan balik perintah langsung",
+        "Dapat digunakan di laptop spek standar laboratorium sekolah",
+      ],
+    },
+    {
+      step: 3,
+      title: "Responsif & Mobile-Friendly (Bisa dari Smartphone)",
+      subtitle: "Fleksibel dipelajari di mana saja dan kapan saja",
+      image: "/images/mobile-learning.jpg",
+      icon: Smartphone,
+      description:
+        "Memahami kendala bahwa tidak semua siswa memiliki laptop di rumah, seluruh tampilan website, modul teori, materi bacaan, dan quiz interaktif dirancang responsif serta ramah pengguna layar smartphone.",
+      points: [
+        "Tata letak luas (full-page) yang nyaman dibaca di smartphone & PC",
+        "Akses materi dan persiapan pre-test dari mana saja",
+        "Navigasi praktis dengan tombol langkah sebelumnya dan selanjutnya",
+      ],
+    },
+    {
+      step: 4,
+      title: "Sertifikat Digital Kompetensi Terverifikasi",
+      subtitle: "Bukti kelulusan resmi dengan nilai dan nama lengkap siswa",
+      image: "/images/digital-certificate.jpg",
+      icon: Award,
+      description:
+        "Siswa yang berhasil menyelesaikan seluruh tahapan dan mencapai nilai di atas standar KKM (75) otomatis memperoleh Sertifikat Digital resmi bertaraf vokasi yang dapat dicetak (Ctrl + P) untuk arsip portofolio kejuruan.",
+      points: [
+        "Pencantuman otomatis Nama Siswa, NIS, Kelas, dan Nilai Akhir",
+        "Predikat kelulusan dan tanggal penyelesaian praktikum",
+        "Siap dicetak dengan format cetak profesional ramah kertas",
+      ],
+    },
+  ];
+
+  // Kelas yang diampu
   const classesList = [
     {
       id: "cloud-computing",
@@ -43,6 +247,7 @@ export default function HomePage() {
       active: true,
       highlights: [
         "Pertemuan 1: Setup VM Ubuntu Server 22.04 LTS",
+        "Pertemuan 2: Instalasi OS CLI & Partisi Storage",
         "Interactive 1-Click Copy CLI Terminal",
         "Alokasi 4 JP (180 Menit) Praktikum Mandiri",
       ],
@@ -107,385 +312,612 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-sky-100 selection:text-sky-900">
-      {/* NAVBAR */}
-      <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
-              <GraduationCap className="h-5 w-5" />
+      {/* ========================================================================= */}
+      {/* 1. TOP MENU / FULLPAGE INTERACTIVE NAVBAR */}
+      {/* ========================================================================= */}
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/90 shadow-xs">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 h-20 flex items-center justify-between">
+          {/* Left: Official Logo + Title */}
+          <Link href="/" className="flex items-center gap-3.5 group">
+            <div className="relative h-12 w-12 sm:h-13 sm:w-13 rounded-2xl bg-white p-1 border border-slate-200 shadow-sm flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
+              <Image
+                src="/logo-tekaje.png"
+                alt="Logo TEKAJE"
+                width={52}
+                height={52}
+                className="object-contain"
+                priority
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-lg text-slate-900 tracking-tight">
-                  Wahyu Rahmat Hidayat
+                <span className="font-extrabold text-base sm:text-lg text-slate-900 tracking-tight group-hover:text-sky-600 transition-colors">
+                  TEKAJE LABS
                 </span>
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-sky-100/80 text-sky-700 border border-sky-200/60 hidden sm:inline-block">
-                  Guru Produktif TKJ
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200 hidden sm:inline-block">
+                  SMK Telkom Lampung
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
-                SMK Telkom Lampung &bull; Portal Pembelajaran &amp; Kelas Online
+              <p className="text-xs text-slate-500 font-medium">
+                Portal Pembelajaran &bull; Wahyu Rahmat Hidayat, S.Kom.
               </p>
             </div>
-          </div>
+          </Link>
 
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold text-slate-600">
             <a href="#profil" className="hover:text-sky-600 transition-colors">
-              Profil &amp; Biodata
+              Profil
             </a>
             <a href="#keahlian" className="hover:text-sky-600 transition-colors">
-              Kompetensi
+              Keahlian Vokasi
+            </a>
+            <a href="#alur-belajar" className="hover:text-sky-600 transition-colors">
+              Alur Belajar
             </a>
             <a href="#daftar-kelas" className="hover:text-sky-600 transition-colors">
               Daftar Kelas
             </a>
-            <a href="#metode" className="hover:text-sky-600 transition-colors">
-              Metode Belajar
-            </a>
-            <a href="#kontak" className="hover:text-sky-600 transition-colors">
-              Kontak
+            <a href="#konsultasi" className="hover:text-sky-600 transition-colors">
+              Konsultasi
             </a>
             <Link
               href="/manajemen-guru"
-              className="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/60 transition-colors"
+              className="text-xs font-bold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/80 transition-colors"
             >
               Kelola Siswa
             </Link>
           </nav>
 
+          {/* Right Action Buttons */}
           <div className="flex items-center gap-3">
             <UserNavPill />
+
             <a
               href="#daftar-kelas"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-slate-900 hover:bg-sky-600 transition-all duration-200 shadow-sm"
+              className="hidden sm:inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-sky-600 transition-all shadow-sm"
             >
               <BookOpen className="h-4 w-4" />
-              <span>Masuk Kelas</span>
+              <span>Lihat Kelas</span>
             </a>
+
+            {/* Mobile Hamburger Toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 cursor-pointer"
+              title="Menu Navigasi"
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
-      </header>
 
-      {/* HERO SECTION: BIODATA & PROFIL PENDIDIK */}
-      <section
-        id="profil"
-        className="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-gradient-to-b from-white via-slate-50 to-slate-100 border-b border-slate-200/60"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(#e0f2fe_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Column: Bio & Greeting */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold shadow-xs">
-                <GraduationCap className="h-3.5 w-3.5 text-sky-600" />
-                <span>Portal Resmi Pengajar &bull; SMK Telkom Lampung</span>
+        {/* Mobile Fullpage Overlay Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden fixed inset-x-0 top-20 bottom-0 bg-slate-900/95 backdrop-blur-xl z-50 p-6 flex flex-col justify-between text-white animate-fade-in">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 pb-4 border-b border-slate-800">
+                <Image
+                  src="/logo-tekaje.png"
+                  alt="Logo TEKAJE"
+                  width={40}
+                  height={40}
+                  className="object-contain"
+                />
+                <div>
+                  <h4 className="font-bold text-white">TEKAJE LABS</h4>
+                  <p className="text-xs text-slate-400">SMK Telkom Lampung</p>
+                </div>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.2]">
-                Wahyu Rahmat Hidayat,{" "}
-                <span className="bg-gradient-to-r from-sky-600 via-indigo-600 to-teal-600 bg-clip-text text-transparent">
-                  S.Kom.
-                </span>
-              </h1>
-
-              <p className="text-base sm:text-lg text-slate-700 font-medium leading-relaxed">
-                Guru Produktif Teknik Jaringan Komputer &amp; Telekomunikasi (TJKT / TKJ)
-                di <b>SMK Telkom Lampung</b>.
-              </p>
-
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Selamat datang di website pribadi dan portal edukasi saya. Di sini, siswa dapat mengakses
-                modul pembelajaran terstruktur, petunjuk praktikum hands-on langkah demi langkah,
-                serta panduan kode terminal untuk mempermudah pelaksanaan pembelajaran di laboratorium komputer.
-              </p>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
+              <div className="flex flex-col gap-3 text-base font-semibold">
+                <a
+                  href="#profil"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  Profil Pendidik
+                </a>
+                <a
+                  href="#keahlian"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  Keahlian &amp; Ruang Lingkup Materi
+                </a>
+                <a
+                  href="#alur-belajar"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  Alur Pembelajaran
+                </a>
                 <a
                   href="#daftar-kelas"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-semibold text-white bg-sky-600 hover:bg-sky-500 shadow-lg shadow-sky-600/25 transition-all duration-200"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-white/10 transition-colors"
                 >
-                  <BookOpen className="h-4.5 w-4.5" />
-                  <span>Lihat Kelas yang Saya Ajar</span>
+                  Daftar Kelas Pembelajaran
+                </a>
+                <a
+                  href="#konsultasi"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-xl hover:bg-white/10 transition-colors"
+                >
+                  Konsultasi &amp; Bantuan
+                </a>
+                <Link
+                  href="/manajemen-guru"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-3 rounded-xl bg-indigo-600/30 text-indigo-300 border border-indigo-500/40"
+                >
+                  Portal Manajemen Guru
+                </Link>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-slate-800 text-xs text-slate-400 text-center">
+              &copy; {new Date().getFullYear()} TEKAJE LABS &bull; Wahyu Rahmat Hidayat, S.Kom.
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* ========================================================================= */}
+      {/* 2. HERO SECTION: MASKOT TEKAJE (KIRI) + TENTANG SINGKAT & CTA (KANAN) */}
+      {/* ========================================================================= */}
+      <section id="profil" className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-slate-100 py-12 md:py-20 border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            {/* HERO KIRI: GAMBAR MASKOT TEKAJE */}
+            <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
+              <div className="relative w-full max-w-md sm:max-w-lg">
+                {/* Background Ambient Glow */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-sky-400/20 via-indigo-500/20 to-teal-400/20 rounded-3xl blur-3xl transform -rotate-2" />
+
+                {/* Mascot Frame */}
+                <div className="relative bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/90 shadow-2xl p-6 sm:p-8 overflow-hidden group">
+                  <div className="relative w-full aspect-square max-h-[460px] mx-auto flex items-center justify-center">
+                    <Image
+                      src="/maskot-tekaje.png"
+                      alt="Maskot TEKAJE SMK Telkom Lampung"
+                      width={440}
+                      height={440}
+                      className="object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
+                      priority
+                    />
+                  </div>
+
+                  {/* Mascot Badge Overlay */}
+                  <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="font-extrabold text-slate-800">Maskot Resmi TKJ</span>
+                    </div>
+                    <span className="font-semibold text-slate-500">
+                      SMK Telkom Lampung
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* HERO KANAN: TENTANG SINGKAT PAK WAHYU & TOMBOL CTA */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left order-1 lg:order-2">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-semibold shadow-xs">
+                <GraduationCap className="h-4 w-4 text-sky-600" />
+                <span>Portal Resmi Guru Produktif &bull; SMK Telkom Lampung</span>
+              </div>
+
+              <div className="space-y-2">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                  Wahyu Rahmat Hidayat,{" "}
+                  <span className="bg-gradient-to-r from-sky-600 via-indigo-600 to-teal-600 bg-clip-text text-transparent">
+                    S.Kom.
+                  </span>
+                </h1>
+                <p className="text-base sm:text-lg font-bold text-sky-700">
+                  Guru Produktif Teknik Komputer &amp; Jaringan (TKJ)
+                </p>
+              </div>
+
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                Selamat datang di platform pembelajaran vokasi digital. Website ini dirancang khusus untuk memandu siswa SMK Telkom Lampung dalam menguasai keterampilan nyata di bidang <b>Cloud Computing</b>, <b>Linux Server Administration</b>, <b>Infrastruktur Routing</b>, dan <b>Keamanan Jaringan</b> melalui praktikum terarah (guided step-by-step) dan simulator terminal interaktif.
+              </p>
+
+              {/* Action Buttons: Lihat Daftar Kelas & Mulai Praktikum */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                <a
+                  href="#daftar-kelas"
+                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow-lg shadow-sky-600/25 transition-all cursor-pointer transform hover:-translate-y-0.5"
+                >
+                  <BookOpen className="h-4 w-4" />
+                  <span>Lihat Daftar Kelas</span>
                   <ArrowRight className="h-4 w-4" />
                 </a>
 
                 <Link
                   href="/kelas/cloud-computing"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-xs hover:border-slate-300 transition-all duration-200"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-sm transition-all"
                 >
-                  <Cloud className="h-4.5 w-4.5 text-sky-600" />
-                  <span>Buka Kelas Cloud Computing</span>
+                  <Cloud className="h-4 w-4 text-sky-600" />
+                  <span>Modul Cloud Computing</span>
                 </Link>
               </div>
 
-              {/* Quick Profile Meta */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 border-t border-slate-200/80 text-left">
-                <div className="p-3 rounded-xl bg-white border border-slate-200/70">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">Unit Sekolah</div>
-                  <div className="text-xs font-bold text-slate-800">SMK Telkom Lampung</div>
+              {/* Stats Highlights Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-200">
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono">8+ Modul</div>
+                  <div className="text-[11px] font-semibold text-slate-500">Praktikum Lab</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white border border-slate-200/70">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">Jurusan Keahlian</div>
-                  <div className="text-xs font-bold text-slate-800">Teknik Komputer &amp; Jaringan</div>
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="text-xl sm:text-2xl font-black text-sky-600 font-mono">100%</div>
+                  <div className="text-[11px] font-semibold text-slate-500">Hands-on CLI</div>
                 </div>
 
-                <div className="p-3 rounded-xl bg-white border border-slate-200/70">
-                  <div className="text-[11px] font-semibold text-slate-500 uppercase">Fokus Pengajaran</div>
-                  <div className="text-xs font-bold text-slate-800">Cloud, Linux &amp; Networking</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Column: Instructor Profile Card */}
-            <div className="lg:col-span-5">
-              <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 p-6 sm:p-8 space-y-6 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-sky-100 rounded-bl-full opacity-60 pointer-events-none" />
-
-                {/* Avatar & Header */}
-                <div className="flex items-center gap-4">
-                  <div className="h-20 w-20 rounded-2xl bg-gradient-to-tr from-sky-500 via-indigo-600 to-teal-500 p-0.5 shadow-md">
-                    <div className="h-full w-full rounded-[14px] bg-slate-900 flex flex-col items-center justify-center text-white">
-                      <UserCheck className="h-9 w-9 text-sky-400" />
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-extrabold text-slate-900 text-lg">
-                      Wahyu Rahmat Hidayat
-                    </h3>
-                    <p className="text-xs font-medium text-sky-600">
-                      Pendidik Vokasi &bull; Guru Produktif
-                    </p>
-                    <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                      <span>Lampung, Indonesia</span>
-                    </div>
-                  </div>
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="text-xl sm:text-2xl font-black text-indigo-600 font-mono">24/7</div>
+                  <div className="text-[11px] font-semibold text-slate-500">Akses Belajar</div>
                 </div>
 
-                {/* Bio Quote */}
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 text-xs text-slate-600 italic leading-relaxed">
-                  "Tujuan saya adalah mendampingi siswa agar tidak ragu bereksperimen dengan server dan jaringan.
-                  Kesalahan sintaks saat praktikum adalah bagian alami dari proses belajar seorang engineer."
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs">
+                  <div className="text-xl sm:text-2xl font-black text-emerald-600 font-mono">Vokasi</div>
+                  <div className="text-[11px] font-semibold text-slate-500">Standar Industri</div>
                 </div>
-
-                {/* Info List */}
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Email Institusi:</span>
-                    <a
-                      href="mailto:wahyu@smktelkom-lpg.sch.id"
-                      className="font-mono text-sky-600 hover:underline"
-                    >
-                      wahyu@smktelkom-lpg.sch.id
-                    </a>
-                  </div>
-
-                  <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Status Pengajar:</span>
-                    <span className="font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                      Aktif Mengajar
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between py-2 border-b border-slate-100">
-                    <span className="text-slate-500 font-medium">Pendekatan:</span>
-                    <span className="font-semibold text-slate-800">
-                      Praktik Mandiri &amp; Copyable Snippet
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between py-2">
-                    <span className="text-slate-500 font-medium">Platform Lab:</span>
-                    <span className="font-semibold text-slate-800">
-                      VirtualBox 7.x &bull; Ubuntu Server CLI
-                    </span>
-                  </div>
-                </div>
-
-                {/* CTA inside Card */}
-                <Link
-                  href="/kelas/cloud-computing"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-900 hover:bg-sky-600 text-white font-semibold text-xs transition-colors"
-                >
-                  <Cloud className="h-4 w-4" />
-                  <span>Kunjungi Kelas Cloud Computing</span>
-                </Link>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* BIDANG KEAHLIAN & KOMPETENSI */}
-      <section id="keahlian" className="py-14 bg-white border-b border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-2 block">
-              Bidang Kompetensi Produktif
+      {/* ========================================================================= */}
+      {/* 3. KEAHLIAN & RUANG LINGKUP MATERI VOKASI: VERTICAL SLIDER INTERAKTIF */}
+      {/* ========================================================================= */}
+      <section id="keahlian" className="py-16 md:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
+              Kompetensi Kejuruan TKJ
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               Keahlian &amp; Ruang Lingkup Materi Vokasi
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Materi yang diajarkan berfokus pada keterampilan terapan yang relevan dengan kebutuhan dunia kerja industri IT saat ini.
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Materi pembelajaran disusun selaras dengan kebutuhan dunia kerja telekomunikasi, administrasi server Linux, perancangan jaringan, dan komputasi awan industri.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-sky-300 hover:shadow-md transition-all">
-              <div className="h-11 w-11 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-4">
-                <Cloud className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1.5 text-base">
-                Cloud &amp; Virtualisasi
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Hypervisor Type-1 &amp; Type-2, instalasi server virtual, isolasi hardware, manajemen snapshot, dan arsitektur cloud lokal.
-              </p>
-            </div>
+          {/* Vertical Slider Component */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left Column: Vertical Selector Navigation */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-3">
+              {skillsData.map((item, index) => {
+                const IconComponent = item.icon;
+                const isSelected = activeSkillIndex === index;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSkillIndex(index)}
+                    className={`text-left p-5 rounded-3xl border transition-all cursor-pointer relative overflow-hidden ${
+                      isSelected
+                        ? "bg-slate-900 text-white border-slate-900 shadow-xl scale-[1.02]"
+                        : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
+                    }`}
+                  >
+                    {isSelected && (
+                      <div className="absolute top-0 left-0 bottom-0 w-2 bg-sky-500" />
+                    )}
 
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-indigo-300 hover:shadow-md transition-all">
-              <div className="h-11 w-11 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-4">
-                <Server className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1.5 text-base">
-                Linux Server Administration
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Penguasaan Ubuntu Server CLI, manajemen paket apt, hak akses permission, partisi disk, dan konfigurasi server headless.
-              </p>
-            </div>
+                    <div className="flex items-center gap-3.5">
+                      <div
+                        className={`h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 ${
+                          isSelected
+                            ? "bg-sky-500 text-white shadow-md shadow-sky-500/30"
+                            : "bg-white text-slate-700 border border-slate-200"
+                        }`}
+                      >
+                        <IconComponent className="h-5 w-5" />
+                      </div>
 
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-teal-300 hover:shadow-md transition-all">
-              <div className="h-11 w-11 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center mb-4">
-                <Network className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1.5 text-base">
-                Jaringan Komputer Lanjut
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Desain subnetting IPv4, NAT, Bridged mode, DHCP Server, Dynamic Routing OSPF, dan konfigurasi perangkat MikroTik/Cisco.
-              </p>
-            </div>
-
-            <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-purple-300 hover:shadow-md transition-all">
-              <div className="h-11 w-11 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center mb-4">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <h3 className="font-bold text-slate-900 mb-1.5 text-base">
-                Keamanan &amp; SysAdmin
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Manajemen firewall UFW/IPTables, SSH Key Authentication, pengamanan port layanan, dan disaster recovery via snapshot.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* DAFTAR KELAS YANG DIAMPU */}
-      <section id="daftar-kelas" className="py-16 md:py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-2 block">
-              Ruang Belajar Siswa
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Katalog Kelas Mata Pelajaran Produktif
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Pilih kelas yang sedang kamu tempuh untuk mengakses modul praktikum mandiri, petunjuk hands-on lab, dan evaluasi hasil belajar.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {classesList.map((item) => {
-              const IconComp = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  className={`rounded-3xl border transition-all duration-300 flex flex-col justify-between overflow-hidden ${
-                    item.active
-                      ? "bg-white border-sky-300 shadow-xl shadow-sky-100/50 hover:border-sky-500"
-                      : "bg-white/70 border-slate-200 opacity-90 hover:opacity-100"
-                  }`}
-                >
-                  <div className="p-7 space-y-5">
-                    {/* Header Card */}
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-center gap-3">
+                      <div className="flex-1 min-w-0">
                         <div
-                          className={`h-12 w-12 rounded-2xl flex items-center justify-center ${
-                            item.active
-                              ? "bg-sky-500 text-white shadow-md shadow-sky-500/20"
-                              : "bg-slate-100 text-slate-500"
+                          className={`text-[10px] font-bold uppercase tracking-wider ${
+                            isSelected ? "text-sky-400" : "text-slate-400"
                           }`}
                         >
-                          <IconComp className="h-6 w-6" />
+                          {item.category}
                         </div>
-                        <div>
-                          <div className="text-xs font-bold text-sky-600 uppercase tracking-wider">
-                            {item.subtitle}
-                          </div>
-                          <h3 className="text-lg font-extrabold text-slate-900 leading-snug">
-                            {item.title}
-                          </h3>
+                        <h3 className="font-bold text-sm sm:text-base leading-snug truncate">
+                          {item.title}
+                        </h3>
+                      </div>
+
+                      <ChevronRight
+                        className={`h-5 w-5 shrink-0 transition-transform ${
+                          isSelected ? "text-sky-400 translate-x-1" : "text-slate-400"
+                        }`}
+                      />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right Column: Active Showcase Panel with Generated AI Image */}
+            <div className="lg:col-span-7">
+              {(() => {
+                const current = skillsData[activeSkillIndex];
+                return (
+                  <div className="bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col h-full animate-fade-in">
+                    {/* Showcase Image Header */}
+                    <div className="relative w-full aspect-[16/9] max-h-[360px] overflow-hidden">
+                      <Image
+                        src={current.image}
+                        alt={current.title}
+                        fill
+                        className="object-cover transition-transform duration-700 hover:scale-105"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+
+                      <div className="absolute top-4 left-4">
+                        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-sky-400 border border-slate-700">
+                          {current.category}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Showcase Content */}
+                    <div className="p-6 sm:p-8 space-y-6 flex-1 flex flex-col justify-between">
+                      <div className="space-y-3">
+                        <h3 className="text-xl sm:text-2xl font-black text-white">
+                          {current.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          {current.description}
+                        </p>
+                      </div>
+
+                      {/* Competencies Badges */}
+                      <div className="space-y-3">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                          Kompetensi yang Dipelajari Siswa:
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {current.competencies.map((comp, idx) => (
+                            <div
+                              key={idx}
+                              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200"
+                            >
+                              <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                              <span className="truncate">{comp}</span>
+                            </div>
+                          ))}
                         </div>
                       </div>
 
-                      <span
-                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full border shrink-0 ${item.statusColor}`}
+                      {/* Action CTA */}
+                      <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+                        <span className="text-xs text-slate-400">
+                          SMK Telkom Lampung &bull; Lab Praktikum TKJ
+                        </span>
+                        <Link
+                          href={current.link}
+                          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs transition-all shadow-md cursor-pointer"
+                        >
+                          <span>{current.ctaText}</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 4. BAGAIMANA SISTEM INI MEMBANTU SISWA: VERTICAL SLIDER TRANSPARAN */}
+      {/* ========================================================================= */}
+      <section id="alur-belajar" className="py-16 md:py-24 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white relative overflow-hidden">
+        {/* Subtle Tech Pattern & Glow */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-sky-600/10 blur-[140px] pointer-events-none rounded-full" />
+
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 relative space-y-12">
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-400 bg-sky-950/80 px-3.5 py-1 rounded-full border border-sky-800">
+              Metode Belajar Modern
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+              Bagaimana Sistem Pembelajaran Ini Membantu Siswa?
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              Dirancang untuk mengatasi kendala belajar teknis di sekolah kejuruan, memastikan setiap siswa terpandu dari nol hingga kompeten.
+            </p>
+          </div>
+
+          {/* Transparent Vertical Slider Container */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left Nav: Vertical Step Buttons with Transparent Glassmorphism */}
+            <div className="lg:col-span-5 flex flex-col justify-between gap-3">
+              {workflowData.map((item, idx) => {
+                const IconComp = item.icon;
+                const isSelected = activeWorkflowIndex === idx;
+                return (
+                  <button
+                    key={item.step}
+                    onClick={() => setActiveWorkflowIndex(idx)}
+                    className={`text-left p-5 rounded-3xl border transition-all cursor-pointer backdrop-blur-md relative ${
+                      isSelected
+                        ? "bg-white/15 border-sky-400 text-white shadow-xl shadow-sky-500/10 scale-[1.02]"
+                        : "bg-white/5 hover:bg-white/10 border-white/10 text-slate-300"
+                    }`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div
+                        className={`h-10 w-10 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0 ${
+                          isSelected
+                            ? "bg-sky-500 text-white shadow-md shadow-sky-500/30"
+                            : "bg-white/10 text-slate-300"
+                        }`}
                       >
-                        {item.status}
+                        {item.step}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-bold text-sm sm:text-base text-white leading-snug">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-1 line-clamp-1">
+                          {item.subtitle}
+                        </p>
+                      </div>
+
+                      <ChevronRight
+                        className={`h-4 w-4 shrink-0 transition-transform ${
+                          isSelected ? "text-sky-400 translate-x-1" : "text-slate-500"
+                        }`}
+                      />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Right Display: Active Transparent Showcase with Image */}
+            <div className="lg:col-span-7">
+              {(() => {
+                const curr = workflowData[activeWorkflowIndex];
+                return (
+                  <div className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 flex flex-col justify-between h-full space-y-6 shadow-2xl animate-fade-in">
+                    {/* Active Image with Glass Border */}
+                    <div className="relative w-full aspect-[16/9] max-h-[340px] rounded-2xl overflow-hidden border border-white/10">
+                      <Image
+                        src={curr.image}
+                        alt={curr.title}
+                        fill
+                        className="object-cover"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+
+                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-500 text-white shadow-sm">
+                          Langkah {curr.step} dari 4
+                        </span>
+                        <span className="text-xs text-slate-300 hidden sm:inline">
+                          Platform Pembelajaran Interaktif
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Step Description & Key Advantages */}
+                    <div className="space-y-4">
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-white">
+                        {curr.title}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        {curr.description}
+                      </p>
+
+                      <div className="space-y-2 pt-2">
+                        {curr.points.map((pt, i) => (
+                          <div key={i} className="flex items-center gap-2.5 text-xs text-slate-200">
+                            <CheckCircle2 className="h-4 w-4 text-sky-400 shrink-0" />
+                            <span>{pt}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 5. DAFTAR KELAS PEMBELAJARAN */}
+      {/* ========================================================================= */}
+      <section id="daftar-kelas" className="py-16 md:py-24 bg-slate-100 border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-white px-3.5 py-1 rounded-full border border-slate-200">
+              Katalog Pembelajaran
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Daftar Kelas yang Diampu
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Pilih kelas di bawah ini untuk mengakses daftar silabus, panduan modul teori, dan praktikum hands-on lab virtual.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            {classesList.map((c) => {
+              const IconComp = c.icon;
+              return (
+                <div
+                  key={c.id}
+                  className={`p-7 rounded-3xl border transition-all flex flex-col justify-between ${
+                    c.active
+                      ? "bg-white border-sky-300 shadow-md hover:border-sky-400 hover:shadow-xl"
+                      : "bg-white/70 border-slate-200 opacity-80"
+                  }`}
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="h-12 w-12 rounded-2xl bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center">
+                        <IconComp className="h-6 w-6" />
+                      </div>
+                      <span className={`text-[11px] font-bold px-3 py-1 rounded-full border ${c.statusColor}`}>
+                        {c.status}
                       </span>
                     </div>
 
+                    <div>
+                      <span className="text-xs font-semibold text-slate-400">{c.subtitle}</span>
+                      <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                        {c.title}
+                      </h3>
+                    </div>
+
                     <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      {item.description}
+                      {c.description}
                     </p>
 
-                    {/* Highlights */}
-                    <div className="space-y-2 pt-2 border-t border-slate-100">
-                      <div className="text-[11px] font-bold text-slate-700 uppercase tracking-wide">
-                        Fitur &amp; Materi Pembelajaran:
-                      </div>
-                      <ul className="space-y-1.5">
-                        {item.highlights.map((h, i) => (
-                          <li
-                            key={i}
-                            className="flex items-center gap-2 text-xs text-slate-600"
-                          >
-                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                            <span>{h}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                      {c.highlights.map((h, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs text-slate-700">
+                          <CheckCircle2 className="h-3.5 w-3.5 text-sky-600 shrink-0" />
+                          <span>{h}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Card Bottom CTA */}
-                  <div className="p-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-slate-500">
-                      {item.badge}
-                    </span>
-
-                    {item.active ? (
+                  <div className="pt-6 mt-4">
+                    {c.active ? (
                       <Link
-                        href={item.href}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs shadow-md shadow-sky-600/20 transition-all"
+                        href={c.href}
+                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs shadow-md shadow-sky-600/20 transition-all cursor-pointer"
                       >
-                        <span>Buka Ruang Kelas Cloud</span>
+                        <span>Buka Silabus &amp; Praktikum</span>
                         <ArrowRight className="h-4 w-4" />
                       </Link>
                     ) : (
                       <button
                         disabled
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-200 text-slate-500 font-semibold text-xs cursor-not-allowed"
+                        className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-slate-100 text-slate-400 font-semibold text-xs cursor-not-allowed"
                       >
-                        <span>Modul Disiapkan</span>
+                        <span>Dalam Tahap Pengembangan</span>
                       </button>
                     )}
                   </div>
@@ -496,223 +928,320 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* METODE & PENDEKATAN BELAJAR */}
-      <section id="metode" className="py-16 md:py-24 bg-white border-y border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div className="lg:col-span-6 space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-200/60">
-                <Sliders className="h-3.5 w-3.5" />
-                <span>Pendekatan Pedagogi Modern</span>
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-snug">
-                Bagaimana Sistem Pembelajaran Ini Membantu Siswa?
-              </h2>
-
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                Sebagai guru produktif di SMK Telkom Lampung, saya melihat kendala utama siswa
-                dalam belajar server adalah rasa cemas salah mengetik perintah terminal atau merusak sistem host.
-                Oleh karena itu, kelas online ini dirancang dengan prinsip:
-              </p>
-
-              <div className="space-y-4 pt-2">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-xl bg-sky-100 text-sky-700 mt-0.5">
-                    <Terminal className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-sm">
-                      1-Click Copy Snippet Perintah
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Siswa tidak perlu repot mengetik ulang manual perintah panjang yang rawan salah spasi atau tanda baca.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-xl bg-emerald-100 text-emerald-700 mt-0.5">
-                    <ShieldCheck className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-sm">
-                      Eksplorasi Aman dengan Snapshot
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Setiap praktikum selalu dimulai dengan pembuatan checkpoint snapshot sehingga siswa bebas mencoba tanpa takut OS rusak.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <div className="p-2 rounded-xl bg-purple-100 text-purple-700 mt-0.5">
-                    <Award className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 text-sm">
-                      Evaluasi &amp; Validasi Mandiri
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      Lengkap dengan Pre-Test diagnostik, lembar pengumpulan portofolio screenshot, dan Post-Test untuk validasi kompetensi.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Featured Preview Cloud Class Card */}
-            <div className="lg:col-span-6">
-              <div className="p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-sky-950 text-white shadow-2xl relative overflow-hidden space-y-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-xs font-mono text-sky-300">
-                      Kelas Tersedia Saat Ini
-                    </span>
-                  </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-white/10 text-slate-200">
-                    4 JP &bull; 180 Menit
-                  </span>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="text-xs font-bold text-sky-400 uppercase tracking-wider">
-                    Modul Praktikum Siap Akses
-                  </div>
-                  <h3 className="text-xl sm:text-2xl font-bold text-white">
-                    Cloud Computing &bull; Pertemuan 01
-                  </h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    Pengenalan Virtualisasi &amp; Persiapan Mesin Virtual Ubuntu Server 22.04 LTS
-                    dengan Oracle VM VirtualBox di Komputer Lab.
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 font-mono text-xs text-sky-300 flex items-center justify-between">
-                  <span>$ sudo apt update &amp;&amp; sudo apt upgrade -y</span>
-                  <span className="text-[11px] text-slate-400">Ubuntu 22.04</span>
-                </div>
-
-                <Link
-                  href="/kelas/cloud-computing"
-                  className="w-full inline-flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-semibold text-xs sm:text-sm shadow-md transition-all"
-                >
-                  <span>Masuk ke Halaman Kelas Cloud Computing</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* KONTAK GURU */}
-      <section id="kontak" className="py-16 md:py-24 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <div className="space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 block">
-              Konsultasi &amp; Bantuan Belajar
+      {/* ========================================================================= */}
+      {/* 6. KONSULTASI & BANTUAN BELAJAR: 6 SALURAN RESMI + FORMULIR PESAN */}
+      {/* ========================================================================= */}
+      <section id="konsultasi" className="py-16 md:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+          {/* Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-3.5 py-1 rounded-full border border-sky-200">
+              Layanan Pendidik
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Ada Kendala Saat Praktikum di Laboratorium?
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Konsultasi &amp; Bantuan Belajar Siswa
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-              Siswa dapat langsung berdiskusi dengan saya di ruang guru / lab komputer SMK Telkom Lampung
-              atau menghubungi via email sekolah resmi.
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Siswa dapat berkonsultasi seputar kendala praktikum lab, penugasan, maupun materi kejuruan melalui saluran resmi Pak Wahyu di bawah ini.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left max-w-2xl mx-auto">
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs">
-              <div className="h-10 w-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center mb-3">
-                <Mail className="h-5 w-5" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Column: 6 Official Contact Channels */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-4">
+                <h3 className="font-extrabold text-base text-slate-900">
+                  Saluran Komunikasi Resmi:
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {/* 1. Email */}
+                  <a
+                    href="mailto:wahyu@smktelkom-lpg.sch.id"
+                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                  >
+                    <div className="h-10 w-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-colors">
+                      <Mail className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">1. Email Resmi</span>
+                      <p className="font-bold text-xs text-slate-900 truncate">
+                        wahyu@smktelkom-lpg.sch.id
+                      </p>
+                      <span className="text-[11px] text-sky-600 font-semibold">Kirim Email &rarr;</span>
+                    </div>
+                  </a>
+
+                  {/* 2. WhatsApp */}
+                  <a
+                    href="https://wa.me/6282185903635"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                  >
+                    <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                      <MessageCircle className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">2. WhatsApp Guru</span>
+                      <p className="font-bold text-xs text-slate-900">0821-8590-3635</p>
+                      <span className="text-[11px] text-emerald-600 font-semibold">Chat Langsung &rarr;</span>
+                    </div>
+                  </a>
+
+                  {/* 3. GitHub */}
+                  <a
+                    href="https://github.com/wahyusmkte"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all flex items-start gap-3 group"
+                  >
+                    <div className="h-10 w-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                      <GithubIcon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">3. GitHub Repo</span>
+                      <p className="font-bold text-xs text-slate-900">github.com/wahyusmkte</p>
+                      <span className="text-[11px] text-slate-600 font-semibold">Lihat Source Code &rarr;</span>
+                    </div>
+                  </a>
+
+                  {/* 4. Instagram */}
+                  <a
+                    href="https://www.instagram.com/wahyurahmat55/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-pink-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                  >
+                    <div className="h-10 w-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                      <InstagramIcon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">4. Instagram</span>
+                      <p className="font-bold text-xs text-slate-900">@wahyurahmat55</p>
+                      <span className="text-[11px] text-pink-600 font-semibold">Ikuti Kegiatan &rarr;</span>
+                    </div>
+                  </a>
+
+                  {/* 5. Facebook */}
+                  <a
+                    href="https://www.facebook.com/wahyurahmat.hidayat.399"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                  >
+                    <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                      <FacebookIcon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">5. Facebook</span>
+                      <p className="font-bold text-xs text-slate-900 truncate">Wahyu Rahmat Hidayat</p>
+                      <span className="text-[11px] text-blue-600 font-semibold">Profil Facebook &rarr;</span>
+                    </div>
+                  </a>
+
+                  {/* 6. YouTube */}
+                  <a
+                    href="https://www.youtube.com/@WahyuRahmatHidayat-f3h"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-red-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                  >
+                    <div className="h-10 w-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                      <YoutubeIcon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">6. YouTube Channel</span>
+                      <p className="font-bold text-xs text-slate-900 truncate">@WahyuRahmatHidayat-f3h</p>
+                      <span className="text-[11px] text-red-600 font-semibold">Tonton Video Lab &rarr;</span>
+                    </div>
+                  </a>
+                </div>
               </div>
-              <div className="text-xs text-slate-500 font-semibold uppercase">Email Resmi</div>
-              <a
-                href="mailto:wahyu@smktelkom-lpg.sch.id"
-                className="text-sm font-bold text-slate-900 hover:text-sky-600 font-mono"
-              >
-                wahyu@smktelkom-lpg.sch.id
-              </a>
             </div>
 
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-xs">
-              <div className="h-10 w-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-3">
-                <MapPin className="h-5 w-5" />
-              </div>
-              <div className="text-xs text-slate-500 font-semibold uppercase">Lokasi Mengajar</div>
-              <div className="text-sm font-bold text-slate-900">
-                Laboratorium TKJ &bull; SMK Telkom Lampung
-              </div>
+            {/* Right Column: Direct Quick Message Form */}
+            <div className="lg:col-span-5">
+              <form onSubmit={handleSendWhatsApp} className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-md space-y-4">
+                <div>
+                  <h3 className="font-extrabold text-base text-slate-900">
+                    Kirim Pesan Cepat ke Guru
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Isi pertanyaan Anda dan langsung terhubung ke WhatsApp Pak Wahyu.
+                  </p>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Nama Siswa *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Muhammad Rizki"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Kelas TKJ *</label>
+                  <select
+                    value={contactClass}
+                    onChange={(e) => setContactClass(e.target.value)}
+                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
+                  >
+                    <option value="XII TKJ 1">XII TKJ 1</option>
+                    <option value="XII TKJ 2">XII TKJ 2</option>
+                    <option value="XI TKJ 1">XI TKJ 1</option>
+                    <option value="XI TKJ 2">XI TKJ 2</option>
+                    <option value="X TJKT">X TJKT</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700">Pesan / Pertanyaan Praktikum *</label>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Contoh: Pak, saya ingin bertanya tentang cara partisi LVM pada Pertemuan 2..."
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Send className="h-4 w-4" />
+                  <span>Kirim via WhatsApp Pak Wahyu</span>
+                </button>
+              </form>
             </div>
           </div>
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer className="mt-auto bg-slate-950 text-slate-400 text-xs border-t border-slate-800 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2 space-y-3">
-              <div className="flex items-center gap-2 text-white font-bold text-base">
-                <GraduationCap className="h-5 w-5 text-sky-400" />
-                <span>Wahyu Rahmat Hidayat &bull; SMK Telkom Lampung</span>
+      {/* ========================================================================= */}
+      {/* 7. FOOTER: LOGO KIRI, SOFT BACKGROUND, & TRENDY OVERSIZED TYPOGRAPHY "TEKAJE" */}
+      {/* ========================================================================= */}
+      <footer className="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 pt-16 pb-8 overflow-hidden relative">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+          {/* Main Footer Columns */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
+            {/* Paling Kiri: Logo TEKAJE + Identitas Sekolah */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative h-12 w-12 rounded-2xl bg-white p-1 border border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
+                  <Image
+                    src="/logo-tekaje.png"
+                    alt="Logo TEKAJE"
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
+                </div>
+                <div>
+                  <h4 className="font-extrabold text-base text-white tracking-tight">
+                    TEKAJE LABS
+                  </h4>
+                  <p className="text-xs text-sky-400 font-medium">
+                    SMK Telkom Lampung
+                  </p>
+                </div>
               </div>
-              <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
-                Portal pembelajaran mandiri dan panduan praktikum bagi siswa Teknik Jaringan Komputer &amp; Telekomunikasi.
+
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+                Portal pembelajaran dan praktikum virtual mandiri Teknik Komputer &amp; Jaringan. Membina generasi teknisi andal berbasis standar industri teknologi cloud dan telekomunikasi.
               </p>
+
+              <div className="text-[11px] text-slate-400 space-y-1">
+                <p>📍 Jl. Purnawirawan No. 1, Gading Rejo, Pringsewu, Lampung</p>
+                <p>✉️ wahyu@smktelkom-lpg.sch.id &bull; 📞 0821-8590-3635</p>
+              </div>
             </div>
 
-            <div>
-              <div className="font-semibold text-white mb-3 text-xs uppercase tracking-wider">
-                Navigasi
-              </div>
-              <ul className="space-y-2">
+            {/* Navigasi Cepat */}
+            <div className="lg:col-span-3 space-y-3">
+              <h5 className="font-bold text-white text-xs uppercase tracking-wider">
+                Navigasi Cepat
+              </h5>
+              <ul className="space-y-2 text-xs">
                 <li>
                   <a href="#profil" className="hover:text-white transition-colors">
-                    Biodata Guru
+                    Profil Pendidik
                   </a>
                 </li>
                 <li>
                   <a href="#keahlian" className="hover:text-white transition-colors">
-                    Bidang Keahlian
+                    Keahlian Vokasi TKJ
+                  </a>
+                </li>
+                <li>
+                  <a href="#alur-belajar" className="hover:text-white transition-colors">
+                    Alur Pembelajaran
                   </a>
                 </li>
                 <li>
                   <a href="#daftar-kelas" className="hover:text-white transition-colors">
-                    Daftar Kelas
+                    Daftar Kelas Praktikum
                   </a>
                 </li>
                 <li>
-                  <Link
-                    href="/kelas/cloud-computing"
-                    className="text-sky-400 hover:text-sky-300 transition-colors"
-                  >
-                    Kelas Cloud Computing
+                  <Link href="/manajemen-guru" className="hover:text-white transition-colors text-indigo-400">
+                    Portal Manajemen Guru
                   </Link>
                 </li>
               </ul>
             </div>
 
-            <div>
-              <div className="font-semibold text-white mb-3 text-xs uppercase tracking-wider">
-                Mata Pelajaran
+            {/* Kelas & Praktikum */}
+            <div className="lg:col-span-4 space-y-3">
+              <h5 className="font-bold text-white text-xs uppercase tracking-wider">
+                Kelas Unggulan
+              </h5>
+              <div className="space-y-2 text-xs">
+                <Link
+                  href="/kelas/cloud-computing"
+                  className="block p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 hover:border-sky-500 transition-colors"
+                >
+                  <div className="font-bold text-white">Cloud Computing (Aktif)</div>
+                  <div className="text-[11px] text-slate-400">
+                    Virtualisasi KVM, VirtualBox, &amp; Ubuntu Server 22.04 LTS
+                  </div>
+                </Link>
+                <div className="p-3 rounded-2xl bg-slate-800/40 border border-slate-800 text-slate-500">
+                  <div className="font-semibold">Administrasi Server (ASJ) &bull; Segera Hadir</div>
+                </div>
               </div>
-              <ul className="space-y-2 text-slate-400">
-                <li>&bull; Cloud Computing (VirtualBox)</li>
-                <li>&bull; Administrasi Sistem Jaringan (Linux)</li>
-                <li>&bull; Administrasi Infrastruktur (MikroTik/Cisco)</li>
-                <li>&bull; Keamanan Jaringan Komputer</li>
-              </ul>
             </div>
           </div>
 
-          <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-            <p>
-              &copy; {new Date().getFullYear()} Wahyu Rahmat Hidayat, S.Kom. &bull; SMK Telkom Lampung.
-            </p>
-            <p>Dibangun dengan Next.js &amp; Tailwind CSS &bull; Siap Deploy di Vercel</p>
+          {/* Copyright bar */}
+          <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+            <div>
+              &copy; {new Date().getFullYear()} TEKAJE LABS &bull; SMK Telkom Lampung &bull; Pendidik: Wahyu Rahmat Hidayat, S.Kom.
+            </div>
+            <div className="flex items-center gap-4">
+              <a href="https://github.com/wahyusmkte" target="_blank" rel="noreferrer" className="hover:text-slate-300">
+                GitHub
+              </a>
+              <a href="https://instagram.com/wahyurahmat55" target="_blank" rel="noreferrer" className="hover:text-slate-300">
+                Instagram
+              </a>
+              <a href="https://youtube.com/@WahyuRahmatHidayat-f3h" target="_blank" rel="noreferrer" className="hover:text-slate-300">
+                YouTube
+              </a>
+            </div>
+          </div>
+
+          {/* TRENDY OVERSIZED TYPOGRAPHY FOOTER: "TEKAJE" */}
+          <div className="pt-4 select-none pointer-events-none">
+            <h1 className="text-center font-black tracking-tighter text-slate-800/40 text-7xl sm:text-9xl md:text-[160px] lg:text-[230px] leading-none uppercase font-mono transition-colors">
+              TEKAJE
+            </h1>
           </div>
         </div>
       </footer>
