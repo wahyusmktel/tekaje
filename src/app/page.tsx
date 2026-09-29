@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import UserNavPill from "@/components/UserNavPill";
 import {
   GraduationCap,
   BookOpen,
@@ -148,6 +149,7 @@ export default function HomePage() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <UserNavPill />
             <a
               href="#daftar-kelas"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-slate-900 hover:bg-sky-600 transition-all duration-200 shadow-sm"

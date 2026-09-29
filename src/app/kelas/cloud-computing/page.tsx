@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import UserNavPill from "@/components/UserNavPill";
 import {
   Cloud,
   Layers,
@@ -192,6 +193,7 @@ export default function CloudComputingSyllabusPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <UserNavPill />
             <Link
               href="/kelas/cloud-computing/pertemuan-1"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 transition-all shadow-sm"

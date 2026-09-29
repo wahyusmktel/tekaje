@@ -4,6 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import LabImage from "@/components/LabImage";
 import InteractiveLabTerminal from "@/components/InteractiveLabTerminal";
+import GuidedStepperHeader from "@/components/GuidedStepperHeader";
+import DigitalCertificate from "@/components/DigitalCertificate";
+import UserNavPill from "@/components/UserNavPill";
+import { useAuth } from "@/context/AuthContext";
 import {
   Terminal,
   Copy,
@@ -23,6 +27,7 @@ import {
   HardDrive,
   Network,
   ArrowLeft,
+  ArrowRight,
   Code2,
   Laptop,
   CheckSquare,
@@ -31,187 +36,207 @@ import {
   Info,
   CheckCircle,
   FolderOpen,
-  Camera,
+  Lock,
+  Unlock,
+  User,
+  GraduationCap,
+  RotateCcw,
 } from "lucide-react";
 
-interface Snippet {
-  id: string;
-  category: "all" | "prep" | "network" | "package" | "system";
-  title: string;
-  description: string;
-  command: string;
-  explanation: string;
-}
-
 export default function PertemuanSatuPage() {
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [activeCategory, setActiveCategory] = useState<string>("all");
-  const [activeHeroTab, setActiveHeroTab] = useState<number>(0);
+  const {
+    user,
+    openLoginModal,
+    getProgress,
+    setPreTestResult,
+    setPostTestResult,
+    completeTheory,
+    completeLab,
+    completePortfolio,
+    unlockNextStep,
+    teacherBypassLocks,
+    resetProgress,
+  } = useAuth();
 
-  const handleCopy = (id: string, text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => {
-      setCopiedId(null);
-    }, 2000);
+  const progress = getProgress("pertemuan-1");
+  const [currentStep, setCurrentStep] = useState(progress.currentStep || 1);
+
+  // Pre-Test state
+  const [preTestAnswers, setPreTestAnswers] = useState<Record<number, number>>({});
+  const [preTestSubmitted, setPreTestSubmitted] = useState(progress.preTestCompleted);
+  const [preTestScore, setPreTestScore] = useState<number>(progress.preTestScore || 0);
+
+  // Post-Test state
+  const [postTestAnswers, setPostTestAnswers] = useState<Record<number, number>>({});
+  const [postTestSubmitted, setPostTestSubmitted] = useState(progress.postTestCompleted);
+  const [postTestScore, setPostTestScore] = useState<number>(progress.postTestScore || 0);
+
+  // Portfolio Checklists
+  const [checklist, setChecklist] = useState({
+    bios: true,
+    wizard: true,
+    network: true,
+    snapshot: true,
+  });
+
+  const preTestQuestions = [
+    {
+      id: 1,
+      q: "Dalam model layanan Cloud Computing, penyediaan infrastruktur virtual seperti VM, storage, dan network disebut...",
+      options: [
+        "Infrastructure as a Service (IaaS)",
+        "Software as a Service (SaaS)",
+        "Platform as a Service (PaaS)",
+        "Network as a Service (NaaS)",
+      ],
+      correctIndex: 0,
+    },
+    {
+      id: 2,
+      q: "Software virtualisasi Oracle VM VirtualBox yang diinstal di atas sistem operasi Windows atau macOS dikategorikan sebagai...",
+      options: [
+        "Type-1 Hypervisor (Bare-Metal)",
+        "Type-2 Hypervisor (Hosted Hypervisor)",
+        "Kernel Container Engine",
+        "Storage Hypervisor",
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 3,
+      q: "Apa alasan utama sistem operasi Ubuntu Server tidak menyertakan antarmuka grafis (GUI) secara bawaan?",
+      options: [
+        "Supaya tidak dapat terhubung ke internet",
+        "Karena Linux tidak mendukung kartu grafis",
+        "Menghemat konsumsi RAM & CPU serta meningkatkan keamanan dan stabilitas",
+        "Agar selalu memerlukan CD-ROM fisik",
+      ],
+      correctIndex: 2,
+    },
+    {
+      id: 4,
+      q: "Fitur CPU yang harus berstatus 'Enabled' di BIOS agar virtualisasi dapat berjalan di komputer lab adalah...",
+      options: [
+        "Hyper-Threading Turbo Boost",
+        "Intel Virtualization Technology (VT-x) atau AMD-V",
+        "Overclocking Memory",
+        "Integrated GPU Accelerator",
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 5,
+      q: "Mengapa pada saat membuat VM baru di VirtualBox 7.x kita diwajibkan mencentang opsi 'Skip Unattended Installation'?",
+      options: [
+        "Agar kita dapat mengatur partisi disk, akun admin user, dan setup OpenSSH secara mandiri",
+        "Supaya harddisk virtual otomatis terkompresi",
+        "Agar VirtualBox otomatis mendownload Ubuntu Desktop",
+        "Agar RAM laptop tidak terkuras",
+      ],
+      correctIndex: 0,
+    },
+  ];
+
+  const postTestQuestions = [
+    {
+      id: 1,
+      q: "Karakteristik mode jaringan NAT (Network Address Translation) pada VirtualBox adalah...",
+      options: [
+        "VM mendapatkan IP satu segmen langsung dengan Wi-Fi fisik sekolah",
+        "VM dapat mengakses internet keluar dengan aman tanpa terdeteksi oleh perangkat luar lab",
+        "VM tidak memiliki akses internet sama sekali",
+        "VM harus memiliki dua kabel LAN fisik",
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 2,
+      q: "Berapa alokasi Base Memory (RAM) minimum yang disarankan untuk Ubuntu Server agar optimal saat dipasang web service?",
+      options: ["512 MB", "1024 MB (1 GB)", "2048 MB (2 GB)", "8192 MB (8 GB)"],
+      correctIndex: 2,
+    },
+    {
+      id: 3,
+      q: "Teks pilihan menu teratas yang muncul pada layar bootloader GNU GRUB saat pertama kali booting ISO Ubuntu Server adalah...",
+      options: [
+        "Format harddisk now",
+        "> Try or Install Ubuntu Server",
+        "Run memory test",
+        "Boot from local drive",
+      ],
+      correctIndex: 1,
+    },
+    {
+      id: 4,
+      q: "Fungsi fitur Checkpoint Snapshot pada VirtualBox yang sangat penting bagi siswa di laboratorium adalah...",
+      options: [
+        "Menyimpan keadaan mesin virtual saat itu agar bisa di-restore kapan saja jika terjadi crash/error",
+        "Menambah kapasitas harddisk fisik laptop secara gratis",
+        "Mempercepat kecepatan internet Wi-Fi lab",
+        "Menghapus seluruh file ISO di komputer",
+      ],
+      correctIndex: 0,
+    },
+    {
+      id: 5,
+      q: "Perintah terminal Ubuntu Server yang digunakan untuk melihat alokasi memori RAM dalam format yang mudah dibaca adalah...",
+      options: ["ram -check", "show mem", "free -h", "memstat --all"],
+      correctIndex: 2,
+    },
+  ];
+
+  const handlePreTestSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    let score = 0;
+    preTestQuestions.forEach((item, idx) => {
+      if (preTestAnswers[idx] === item.correctIndex) {
+        score += 20;
+      }
+    });
+    setPreTestScore(score);
+    setPreTestSubmitted(true);
+    setPreTestResult("pertemuan-1", score);
   };
 
-  const heroSnippets = [
-    {
-      title: "Update Repositori Server",
-      desc: "Menyinkronkan daftar katalog paket terbaru dari server mirror resmi Ubuntu",
-      command: "sudo apt update && sudo apt upgrade -y",
-      env: "Ubuntu Server 22.04 LTS (CLI)",
-    },
-    {
-      title: "Cek Alamat IP & Interface",
-      desc: "Melihat konfigurasi antarmuka jaringan dan IP address yang didapat dari NAT / DHCP",
-      command: "ip -brief address show",
-      env: "Ubuntu Server 22.04 LTS (CLI)",
-    },
-    {
-      title: "Uji Koneksi Internet Lab",
-      desc: "Melakukan ping uji koneksi ke Public DNS Google sebanyak 4 paket",
-      command: "ping -c 4 8.8.8.8",
-      env: "Ubuntu Server 22.04 LTS (CLI)",
-    },
-    {
-      title: "Cek Alokasi Memori RAM",
-      desc: "Memverifikasi apakah alokasi RAM 2GB (2048 MB) terbaca dengan tepat di Linux",
-      command: "free -h",
-      env: "Ubuntu Server 22.04 LTS (CLI)",
-    },
-  ];
+  const handlePostTestSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    let score = 0;
+    postTestQuestions.forEach((item, idx) => {
+      if (postTestAnswers[idx] === item.correctIndex) {
+        score += 20;
+      }
+    });
+    setPostTestScore(score);
+    setPostTestSubmitted(true);
+    setPostTestResult("pertemuan-1", score);
+  };
 
-  const snippetsList: Snippet[] = [
-    {
-      id: "pkg-1",
-      category: "package",
-      title: "Pembaruan Paket Sistem Lengkap",
-      description: "Perintah wajib saat pertama kali mengonfigurasi Ubuntu Server baru.",
-      command: "sudo apt update && sudo apt upgrade -y",
-      explanation:
-        "'apt update' memperbarui indeks katalog paket, sedangkan 'apt upgrade -y' memasang pembaruan terkini tanpa menunggu konfirmasi manual.",
-    },
-    {
-      id: "net-1",
-      category: "network",
-      title: "Pemeriksaan IP Address Ringkas",
-      description: "Menampilkan status interface jaringan (UP/DOWN) beserta IP Address lokal.",
-      command: "ip -brief address show",
-      explanation:
-        "Opsi '-brief' membuat output lebih bersih dan rapi dibandingkan 'ifconfig' atau 'ip a' standar.",
-    },
-    {
-      id: "net-2",
-      category: "network",
-      title: "Uji Konektivitas Internet Lab",
-      description: "Mengirim 4 paket ICMP Echo ke DNS Google untuk memvalidasi gateway NAT.",
-      command: "ping -c 4 8.8.8.8",
-      explanation:
-        "Parameter '-c 4' membatasi proses ping hanya 4 kali sehingga terminal tidak terus-menerus berjalan di Linux.",
-    },
-    {
-      id: "sys-1",
-      category: "system",
-      title: "Monitoring Penggunaan RAM",
-      description: "Melihat alokasi RAM total, terpakai, dan sisa dalam format yang mudah dibaca (Human Readable).",
-      command: "free -h",
-      explanation:
-        "Opsi '-h' mengonversi byte menjadi Megabyte (MB) atau Gigabyte (GB) sehingga mudah dianalisis oleh siswa.",
-    },
-    {
-      id: "sys-2",
-      category: "system",
-      title: "Cek Kapasitas Disk Root (/) 25GB",
-      description: "Memastikan partisi virtual harddisk VDI 25 GB terpasang secara optimal.",
-      command: "df -h /",
-      explanation:
-        "Menampilkan kapasitas ruang penyimpanan pada titik pasang root (/) beserta persentase penggunaannya.",
-    },
-    {
-      id: "prep-1",
-      category: "prep",
-      title: "Verifikasi Hypervisor Virtualisasi",
-      description: "Mendeteksi apakah sistem operasi saat ini berjalan di dalam mesin virtual (VM).",
-      command: "systemd-detect-virt",
-      explanation:
-        "Akan menghasilkan output 'oracle' jika dijalankan di dalam VirtualBox, membuktikan bahwa isolasi hypervisor aktif.",
-    },
-    {
-      id: "prep-2",
-      category: "prep",
-      title: "Cek Hostname & Spesifikasi Kernel",
-      description: "Melihat identitas server, versi arsitektur kernel 64-bit, dan rilis Ubuntu.",
-      command: "hostnamectl",
-      explanation:
-        "Menampilkan Static hostname, Operating System (Ubuntu 22.04 LTS), Kernel Linux, dan jenis Arsitektur CPU.",
-    },
-    {
-      id: "sys-3",
-      category: "system",
-      title: "Perintah Matikan Server Bersih",
-      description: "Mematikan sistem operasi server secara aman sebelum mengambil snapshot checkpoint.",
-      command: "sudo poweroff",
-      explanation:
-        "Memastikan seluruh proses daemon dan I/O filesystem disinkronkan ke disk sebelum VM dimatikan.",
-    },
-  ];
+  const isStepUnlocked = (stepNum: number) => {
+    if (teacherBypassLocks) return true;
+    return stepNum <= progress.maxUnlockedStep;
+  };
 
-  const filteredSnippets =
-    activeCategory === "all"
-      ? snippetsList
-      : snippetsList.filter((s) => s.category === activeCategory);
+  const goToNextStep = (stepNum: number) => {
+    const next = stepNum + 1;
+    if (isStepUnlocked(next)) {
+      setCurrentStep(next);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      alert(`🔒 Langkah ${next} masih terkunci! Selesaikan tantangan pada langkah ini terlebih dahulu.`);
+    }
+  };
 
-  const learningSteps = [
-    {
-      step: "01",
-      title: "Pre-Test Awal",
-      desc: "10 soal uji diagnostik awal untuk mengukur pemahaman konsep dasar sebelum praktikum.",
-      tag: "Diagnostik",
-      color: "bg-sky-50 text-sky-700 border-sky-200",
-    },
-    {
-      step: "02",
-      title: "Modul Teori",
-      desc: "Fondasi arsitektur cloud, Type-2 Hypervisor, dan karakteristik OS Ubuntu Server 22.04.",
-      tag: "Pemahaman",
-      color: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    },
-    {
-      step: "03",
-      title: "Hands-on Lab",
-      desc: "Panduan interaktif pembuatan VM di VirtualBox dengan konfigurasi hardware optimal.",
-      tag: "Praktikum",
-      color: "bg-teal-50 text-teal-700 border-teal-200",
-    },
-    {
-      step: "04",
-      title: "Verifikasi & Tugas",
-      desc: "Pengumpulan 4 bukti tangkapan layar (screenshot) hasil konfigurasi mesin virtual siswa.",
-      tag: "Portofolio",
-      color: "bg-amber-50 text-amber-700 border-amber-200",
-    },
-    {
-      step: "05",
-      title: "Post-Test Evaluasi",
-      desc: "Uji evaluasi pemahaman akhir materi praktikum dengan target kelulusan minimal skor 75.",
-      tag: "Evaluasi",
-      color: "bg-purple-50 text-purple-700 border-purple-200",
-    },
-    {
-      step: "06",
-      title: "Sertifikat Digital",
-      desc: "Pemberian validasi kompetensi kelulusan modul praktikum yang dapat dicetak langsung.",
-      tag: "Capaian",
-      color: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    },
-  ];
+  const goToPrevStep = (stepNum: number) => {
+    if (stepNum > 1) {
+      setCurrentStep(stepNum - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-sky-100 selection:text-sky-900">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-sky-100 selection:text-sky-900 pb-24 sm:pb-16">
       {/* NAVBAR */}
-      <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
@@ -233,696 +258,734 @@ export default function PertemuanSatuPage() {
                   Pertemuan 01: Setup VM Ubuntu Server
                 </span>
                 <p className="text-[11px] text-slate-500 hidden sm:block">
-                  Mata Pelajaran: Cloud Computing &bull; Wahyu Rahmat Hidayat, S.Kom.
+                  Kelas Cloud Computing &bull; Wahyu Rahmat Hidayat, S.Kom.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <a
-              href="#hands-on-terminal"
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-all shadow-xs"
-            >
-              <Terminal className="h-3.5 w-3.5 text-sky-600" />
-              <span>Web Simulator Lab</span>
-            </a>
-
-            <a
-              href="#panduan-praktikum"
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 transition-all shadow-sm"
-            >
-              <BookOpen className="h-3.5 w-3.5" />
-              <span>Panduan Hands-on</span>
-            </a>
+          <div className="flex items-center gap-3">
+            <UserNavPill />
           </div>
         </div>
       </header>
 
-      {/* HERO BANNER PERTEMUAN 1 */}
-      <section className="bg-gradient-to-b from-white via-slate-50 to-slate-100 border-b border-slate-200/80 py-10 md:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <Link href="/" className="hover:text-sky-600">
-              Wahyu Rahmat Hidayat
-            </Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/kelas/cloud-computing" className="hover:text-sky-600">
-              Silabus Cloud Computing
-            </Link>
-            <ChevronRight className="h-3 w-3" />
-            <span className="text-sky-600 font-semibold">Pertemuan 01</span>
-          </div>
+      {/* STICKY GUIDED STEPPER HEADER */}
+      <GuidedStepperHeader
+        currentStep={currentStep}
+        maxUnlockedStep={progress.maxUnlockedStep}
+        onSelectStep={(st) => {
+          setCurrentStep(st);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }}
+        meetingNumber={1}
+        meetingTitle="Pengenalan Virtualisasi & Persiapan VM Ubuntu Server"
+      />
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider">
-                  Pertemuan 01
-                </span>
-                <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-medium">
-                  Alokasi: 4 JP (180 Menit)
-                </span>
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold">
-                  Lab Komputer Mandiri
-                </span>
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                Pengenalan Virtualisasi &amp; Persiapan Mesin Virtual Ubuntu Server 22.04 LTS
-              </h1>
-
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
-                Modul ajar praktikum laboratorium komputer SMK Telkom Lampung.
-                Siswa dibimbing untuk memahami arsitektur virtualisasi server, mengonfigurasi
-                Oracle VM VirtualBox 7.x, menyiapkan file ISO Ubuntu Server 22.04 LTS,
-                serta mengatur mode jaringan NAT dan pembuatan snapshot cadangan.
-              </p>
-
-              {/* Guide on screenshot files */}
-              <div className="p-3.5 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-900 flex items-start gap-2.5">
-                <FolderOpen className="h-4 w-4 text-sky-600 shrink-0 mt-0.5" />
-                <div>
-                  <b className="font-semibold">Info Lokasi File Gambar Tangkapan Layar (Screenshot):</b>
-                  <p className="text-[11px] text-sky-800 mt-0.5">
-                    Seluruh tangkapan layar praktikum di halaman ini tersimpan pada folder:{" "}
-                    <code className="bg-white px-1.5 py-0.5 rounded border border-sky-200 font-mono text-sky-900">
-                      public/images/cloud-computing/pertemuan-1/
-                    </code>
-                    . Jika file gambar tersedia, sistem otomatis menampilkannya secara langsung!
-                  </p>
-                </div>
-              </div>
+      {/* STUDENT NOT LOGGED IN CALLOUT BANNER */}
+      {!user.isLoggedIn && (
+        <div className="bg-sky-50 border-b border-sky-200 px-4 py-3">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-sky-900">
+            <div className="flex items-center gap-2 text-center sm:text-left">
+              <Sparkles className="h-4 w-4 text-sky-600 shrink-0" />
+              <span>
+                <b>Halo Siswa!</b> Anda belum memasukkan nama lengkap.
+                Masuk terlebih dahulu agar <b>Nilai Praktikum &amp; Sertifikat Digital</b> tercetak atas namamu!
+              </span>
             </div>
-
-            {/* Right: Live Interactive Terminal */}
-            <div className="lg:col-span-5">
-              <div className="rounded-2xl border border-slate-700/20 bg-slate-900 text-white shadow-xl shadow-slate-900/20 overflow-hidden">
-                <div className="bg-slate-800/90 px-4 py-3 flex items-center justify-between border-b border-slate-700/60">
-                  <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-rose-500 inline-block" />
-                    <span className="h-3 w-3 rounded-full bg-amber-500 inline-block" />
-                    <span className="h-3 w-3 rounded-full bg-emerald-500 inline-block" />
-                    <span className="ml-2 font-mono text-xs text-slate-400">
-                      wahyu@ubuntu-server: ~
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span>Live Snippet</span>
-                  </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="flex border-b border-slate-800 bg-slate-950/60 px-2 pt-2 gap-1 overflow-x-auto text-xs font-medium">
-                  {heroSnippets.map((tab, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveHeroTab(idx)}
-                      className={`px-3 py-2 rounded-t-lg transition-all text-xs whitespace-nowrap cursor-pointer ${
-                        activeHeroTab === idx
-                          ? "bg-slate-900 text-sky-400 border-t-2 border-sky-400 font-semibold"
-                          : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/50"
-                      }`}
-                    >
-                      {tab.title}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Terminal Body */}
-                <div className="p-5 font-mono text-xs sm:text-sm space-y-4 bg-slate-900/95">
-                  <div className="text-slate-400 text-xs italic">
-                    # {heroSnippets[activeHeroTab].desc}
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-slate-950/90 border border-slate-800/80 flex items-center justify-between gap-3 group">
-                    <div className="flex items-center gap-2 overflow-x-auto py-1">
-                      <span className="text-emerald-400 font-bold">$</span>
-                      <span className="text-slate-100 font-semibold tracking-wide">
-                        {heroSnippets[activeHeroTab].command}
-                      </span>
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        handleCopy(
-                          `hero-${activeHeroTab}`,
-                          heroSnippets[activeHeroTab].command
-                        )
-                      }
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 cursor-pointer ${
-                        copiedId === `hero-${activeHeroTab}`
-                          ? "bg-emerald-600 text-white shadow-sm"
-                          : "bg-slate-800 hover:bg-slate-700 text-sky-300 border border-slate-700"
-                      }`}
-                      title="Salin ke clipboard"
-                    >
-                      {copiedId === `hero-${activeHeroTab}` ? (
-                        <>
-                          <Check className="h-3.5 w-3.5" />
-                          <span>Tersalin!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-3.5 w-3.5" />
-                          <span>Salin</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  <div className="rounded-lg bg-slate-950/60 p-3 text-[11px] text-slate-400 border border-slate-800/50">
-                    <span className="text-sky-300 font-semibold">Trik Praktikum:</span> Siswa cukup
-                    klik tombol <b>Salin</b> di atas, lalu tempelkan (paste) langsung ke konsol terminal
-                    tanpa takut kesalahan ketik spasi atau tanda baca.
-                  </div>
-                </div>
-              </div>
-            </div>
+            <button
+              onClick={openLoginModal}
+              className="px-4 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold transition-all shadow-xs shrink-0 cursor-pointer"
+            >
+              Masukkan Nama Siswa
+            </button>
           </div>
         </div>
-      </section>
+      )}
 
-      {/* TUJUAN PEMBELAJARAN & SPESIFIKASI ALAT */}
-      <section className="py-12 bg-white border-b border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-            {/* Tujuan Pembelajaran */}
-            <div className="md:col-span-6 p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
-              <div className="flex items-center gap-2 text-sky-700 font-bold text-sm">
-                <Award className="h-5 w-5" />
-                <span>🎯 Tujuan Pembelajaran Praktikum</span>
-              </div>
-              <ul className="space-y-2.5 text-xs text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Siswa memahami konsep dasar Cloud Computing, Virtualisasi, dan peran Type-2 Hypervisor.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Siswa mampu menginstal dan mengonfigurasi software Oracle VM VirtualBox di komputer lab.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Siswa mampu menyiapkan file image ISO Ubuntu Server 22.04 LTS (64-bit).</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Siswa mampu membuat VM baru dengan alokasi resource optimal (RAM 2GB, 2 CPU, Storage 25GB).</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Siswa memahami karakteristik mode jaringan NAT dan Bridged Adapter pada server lab.</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Alat & Bahan */}
-            <div className="md:col-span-6 p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-4">
-              <div className="flex items-center gap-2 text-indigo-700 font-bold text-sm">
-                <Laptop className="h-5 w-5" />
-                <span>🛠️ Alat dan Bahan Laboratorium Komputer</span>
-              </div>
-              <div className="space-y-2.5 text-xs text-slate-700">
-                <div className="p-3 bg-white rounded-xl border border-slate-200/70 flex items-center justify-between">
-                  <span className="font-semibold text-slate-800">Hardware Fisik:</span>
-                  <span className="text-slate-600">Laptop / PC Lab (RAM min. 8GB disarankan, disk 30GB free)</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-slate-200/70 flex items-center justify-between">
-                  <span className="font-semibold text-slate-800">Hypervisor Software:</span>
-                  <span className="text-slate-600">Oracle VM VirtualBox versi 7.x + Extension Pack</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-slate-200/70 flex items-center justify-between">
-                  <span className="font-semibold text-slate-800">Sistem Operasi:</span>
-                  <span className="text-slate-600 font-mono">ubuntu-22.04.x-live-server-amd64.iso</span>
-                </div>
-                <div className="p-3 bg-white rounded-xl border border-slate-200/70 flex items-center justify-between">
-                  <span className="font-semibold text-slate-800">Koneksi Lab:</span>
-                  <span className="text-slate-600">Jaringan LAN / Wi-Fi Lab SMK Telkom Lampung</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* DASAR TEORI & ARSITEKTUR VIRTUALISASI */}
-      <section className="py-12 bg-slate-50 border-b border-slate-200/80">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="p-6 sm:p-8 bg-white rounded-3xl border border-slate-200 space-y-4">
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Layers className="h-5 w-5 text-sky-600" />
-              <span>💡 Dasar Teori: Mengapa Virtualisasi &amp; Ubuntu Server?</span>
-            </h2>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Di dunia industri <b>Cloud Computing</b>, penyedia layanan (seperti AWS EC2, Google Cloud, atau DigitalOcean) membagi
-              satu komputer server fisik besar menjadi ratusan server virtual mandiri menggunakan teknologi <b>Virtualisasi</b>.
-              Dengan menggunakan <b>Oracle VirtualBox</b> di komputer lab kita, kita sedang menciptakan simulasi server cloud privat di komputer lokal.
-            </p>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              <b>Ubuntu Server 22.04 LTS</b> dipilih karena merupakan sistem operasi standar industri yang sangat stabil,
-              didukung pembaruan jangka panjang (LTS), dan sangat efisien karena beroperasi tanpa antarmuka grafis desktop (CLI-only / Headless).
-            </p>
-
-            {/* Real Screenshot / Fallback Placeholder for Architecture */}
-            <LabImage
-              src="/images/cloud-computing/pertemuan-1/gambar1_arsitektur_virtualisasi.png"
-              alt="Diagram Arsitektur Virtualisasi Type-2 Hypervisor"
-              caption="Gambar 1.1: Diagram Arsitektur Virtualisasi Type-2 Hypervisor pada OS Host"
-              placeholderGuide="Screenshot diagram arsitektur virtualisasi yang membedakan Host OS, Hypervisor VirtualBox, dan Guest OS Ubuntu Server."
-              suggestedFileName="gambar1_arsitektur_virtualisasi.png"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* INTERACTIVE HANDS-ON LAB WEB TERMINAL */}
-      <section id="hands-on-terminal" className="py-14 bg-white border-b border-slate-200/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-1 block">
-              Laboratorium Interaktif Berbasis Web
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Hands-on Lab Terminal Simulator
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Siswa dapat mempraktikkan perintah Ubuntu Server secara langsung di browser ini tanpa perlu instalasi awal.
-              Selesaikan 5 misi praktikum berikut dan perhatikan validasi otomatisnya!
-            </p>
-          </div>
-
-          <InteractiveLabTerminal />
-        </div>
-      </section>
-
-      {/* 4 TAHAPAN PRAKTIKUM HANDS-ON DENGAN SCREENSHOT REAL */}
-      <section id="panduan-praktikum" className="py-16 md:py-20 bg-slate-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-2 block">
-              Petunjuk Pelaksanaan
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Instruksi Praktikum Langkah demi Langkah
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Lakukan konfigurasi sesuai urutan tahap di bawah ini pada komputer laboratorium Anda.
-            </p>
-          </div>
-
-          <div className="space-y-8">
-            {/* Tahap 1 */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
+      {/* MAIN STEP CONTENT CONTAINER */}
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+        {/* ========================================================================= */}
+        {/* STEP 1: PRE-TEST DIAGNOSTIK */}
+        {/* ========================================================================= */}
+        {currentStep === 1 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <span className="h-8 w-8 rounded-xl bg-sky-100 text-sky-700 font-extrabold flex items-center justify-center text-sm">
                     1
                   </span>
-                  <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
-                    Tahap 1: Verifikasi Fitur Virtualisasi CPU di Windows
-                  </h3>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
+                      Langkah 1: Pre-Test Awal (Uji Diagnostik)
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Jawablah 5 soal singkat berikut untuk menguji pemahaman awal sebelum memulai praktikum.
+                    </p>
+                  </div>
                 </div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
-                  Task Manager &bull; BIOS VT-x / AMD-V
-                </span>
+
+                {preTestSubmitted && (
+                  <div className="px-3 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold font-mono">
+                    Skor Pre-Test: {preTestScore} / 100
+                  </div>
+                )}
               </div>
 
-              <ol className="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                <li>
-                  Tekan kombinasi tombol keyboard <code>Ctrl + Shift + Esc</code> untuk membuka <b>Task Manager</b>.
-                </li>
-                <li>
-                  Pilih tab <b>Performance</b>, lalu klik menu <b>CPU</b> pada panel sebelah kiri.
-                </li>
-                <li>
-                  Perhatikan informasi di pojok kanan bawah: Pastikan tertulis{" "}
-                  <b className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                    Virtualization: Enabled
-                  </b>.
-                </li>
-              </ol>
+              <form onSubmit={handlePreTestSubmit} className="space-y-6 pt-2">
+                {preTestQuestions.map((q, idx) => (
+                  <div
+                    key={q.id}
+                    className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3"
+                  >
+                    <div className="font-bold text-xs sm:text-sm text-slate-900 flex items-start gap-2">
+                      <span className="text-sky-600 font-mono">{idx + 1}.</span>
+                      <span>{q.q}</span>
+                    </div>
 
-              {/* Screenshot / Placeholder Tahap 1 */}
-              <LabImage
-                src="/images/cloud-computing/pertemuan-1/gambar2_task_manager_vtx.png"
-                alt="Screenshot Task Manager Virtualization Enabled"
-                caption="Gambar 1.2: Memastikan status Virtualization: Enabled pada tab CPU Task Manager Windows"
-                placeholderGuide="Tangkapan layar jendela Task Manager tab Performance -> CPU yang menunjukkan status 'Virtualization: Enabled' di pojok kanan bawah."
-                suggestedFileName="gambar2_task_manager_vtx.png"
-              />
+                    <div className="space-y-2 pl-4">
+                      {q.options.map((opt, optIdx) => (
+                        <label
+                          key={optIdx}
+                          className={`flex items-center gap-3 p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                            preTestAnswers[idx] === optIdx
+                              ? "bg-sky-50 border-sky-400 text-sky-900 font-semibold shadow-xs"
+                              : "bg-white border-slate-200 hover:border-slate-300 text-slate-700"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`pretest-${idx}`}
+                            checked={preTestAnswers[idx] === optIdx}
+                            onChange={() =>
+                              setPreTestAnswers((prev) => ({
+                                ...prev,
+                                [idx]: optIdx,
+                              }))
+                            }
+                            disabled={preTestSubmitted && !teacherBypassLocks}
+                            className="text-sky-600 focus:ring-sky-500"
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
 
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2.5">
-                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
-                <span>
-                  ⚠️ <b>Catatan Guru:</b> Jika tertulis <b>Disabled</b>, segera laporkan ke guru pembimbing untuk
-                  mengaktifkan fitur <b>Intel VT-x</b> atau <b>AMD-V</b> pada menu BIOS/UEFI laptop.
+                {!preTestSubmitted ? (
+                  <button
+                    type="submit"
+                    disabled={Object.keys(preTestAnswers).length < preTestQuestions.length}
+                    className="w-full py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Kirim Jawaban Pre-Test &amp; Buka Langkah 2</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="font-extrabold text-sm flex items-center gap-2">
+                        <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                        <span>Pre-Test Selesai! Skor Anda: {preTestScore} / 100</span>
+                      </div>
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-200 text-emerald-800">
+                        Langkah 2 Terbuka
+                      </span>
+                    </div>
+                    <p className="text-xs text-emerald-800 leading-relaxed">
+                      Kerja bagus! Pemahaman awal Anda telah tercatat. Sekarang mari kita pelajari
+                      konsep teori dasar virtualisasi sebelum masuk ke simulator praktikum.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => goToNextStep(1)}
+                      className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <span>Lanjut ke Langkah 2: Teori &amp; Konsep</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 2: TEORI & OBSERVASI KONSEP */}
+        {/* ========================================================================= */}
+        {currentStep === 2 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
+              <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
+                <span className="h-8 w-8 rounded-xl bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-sm">
+                  2
                 </span>
+                <div>
+                  <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
+                    Langkah 2: Modul Teori Dasar Virtualisasi &amp; Server
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Pahami pondasi arsitektur cloud server sebelum mempraktikkannya di laboratorium.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                <p>
+                  Di industri <b>Cloud Computing</b>, penyedia layanan seperti AWS EC2, Google Cloud,
+                  atau Telkom Cloud membagi satu server fisik besar menjadi ratusan server virtual mandiri
+                  menggunakan teknologi <b>Virtualisasi</b>.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-3">
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                    <h4 className="font-bold text-slate-900 text-xs text-sky-700">
+                      1. Type-2 Hypervisor (Hosted)
+                    </h4>
+                    <p className="text-xs text-slate-600">
+                      Berjalan di atas sistem operasi host (seperti VirtualBox di Windows). Sangat ideal untuk simulasi laboratorium sekolah siswa.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+                    <h4 className="font-bold text-slate-900 text-xs text-indigo-700">
+                      2. Ubuntu Server 22.04 LTS (CLI)
+                    </h4>
+                    <p className="text-xs text-slate-600">
+                      Sistem operasi tanpa GUI (Headless) standar industri yang sangat hemat RAM (hanya butuh ~150-250MB saat idle) dan sangat stabil.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Diagram Real / Placeholder */}
+                <LabImage
+                  src="/images/cloud-computing/pertemuan-1/gambar1_arsitektur_virtualisasi.png"
+                  alt="Diagram Arsitektur Virtualisasi Type-2 Hypervisor"
+                  caption="Gambar 1.1: Diagram Arsitektur Virtualisasi Type-2 Hypervisor pada OS Host Komputer Lab"
+                  placeholderGuide="Diagram arsitektur virtualisasi yang membedakan Host Hardware, Host OS Windows, Hypervisor VirtualBox, dan Guest OS Ubuntu Server."
+                  suggestedFileName="gambar1_arsitektur_virtualisasi.png"
+                />
+              </div>
+
+              {/* Challenge completion button */}
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <button
+                  onClick={() => goToPrevStep(2)}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold cursor-pointer"
+                >
+                  &larr; Kembali ke Pre-Test
+                </button>
+
+                <button
+                  onClick={() => {
+                    completeTheory("pertemuan-1");
+                    goToNextStep(2);
+                  }}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Saya Sudah Paham &amp; Lanjut ke Hands-on Lab</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </div>
+          </div>
+        )}
 
-            {/* Tahap 2 */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
+        {/* ========================================================================= */}
+        {/* STEP 3: HANDS-ON LAB TERMINAL SIMULATOR */}
+        {/* ========================================================================= */}
+        {currentStep === 3 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="h-8 w-8 rounded-xl bg-indigo-100 text-indigo-700 font-extrabold flex items-center justify-center text-sm">
-                    2
-                  </span>
-                  <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
-                    Tahap 2: Pembuatan Mesin Virtual (VM) Baru
-                  </h3>
-                </div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-rose-100 text-rose-800">
-                  Wajib: Skip Unattended Install!
-                </span>
-              </div>
-
-              <ol className="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                <li>Buka aplikasi <b>Oracle VM VirtualBox</b> di komputer lab.</li>
-                <li>Klik tombol ikon <b>New (Baru)</b> pada toolbar atas.</li>
-                <li>
-                  Konfigurasikan formulir identitas VM:
-                  <ul className="list-disc list-inside ml-6 mt-1.5 space-y-1 text-slate-600">
-                    <li><b>Name:</b> <code>Ubuntu-Server-22.04</code></li>
-                    <li><b>ISO Image:</b> Arahkan ke file <code>ubuntu-22.04.x-live-server-amd64.iso</code>.</li>
-                    <li><b>Type:</b> <code>Linux</code> | <b>Version:</b> <code>Ubuntu (64-bit)</code></li>
-                    <li>
-                      <b className="text-rose-600">[WAJIB]:</b> Beri tanda centang pada opsi{" "}
-                      <b>'Skip Unattended Installation'</b>!
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  Alokasi Hardware:
-                  <ul className="list-disc list-inside ml-6 mt-1.5 space-y-1 text-slate-600">
-                    <li><b>Base Memory (RAM):</b> <code>2048 MB (2 GB)</code> (Zona hijau aman).</li>
-                    <li><b>Processors (CPU):</b> <code>2 CPUs</code>.</li>
-                  </ul>
-                </li>
-                <li>
-                  Alokasi Penyimpanan:
-                  <ul className="list-disc list-inside ml-6 mt-1.5 space-y-1 text-slate-600">
-                    <li>Pilih <b>Create a Virtual Harddisk Now</b>.</li>
-                    <li>Ukuran: <b>25.00 GB</b> (Dynamically Allocated VDI).</li>
-                  </ul>
-                </li>
-                <li>Klik <b>Finish</b>.</li>
-              </ol>
-
-              {/* Screenshot / Placeholder Tahap 2 */}
-              <LabImage
-                src="/images/cloud-computing/pertemuan-1/gambar2_panduan_wizard_vm.png"
-                alt="Form Wizard VM Ubuntu Server"
-                caption="Gambar 1.3: Rincian Konfigurasi Formulir Wizard VM Ubuntu Server (VirtualBox 7.x)"
-                placeholderGuide="Tangkapan layar form wizard pembuatan New VM di VirtualBox yang menunjukkan alokasi RAM 2048MB, 2 CPU, dan centang Skip Unattended."
-                suggestedFileName="gambar2_panduan_wizard_vm.png"
-              />
-            </div>
-
-            {/* Tahap 3 */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <span className="h-8 w-8 rounded-xl bg-teal-100 text-teal-700 font-extrabold flex items-center justify-center text-sm">
                     3
                   </span>
-                  <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
-                    Tahap 3: Pengecekan Pengaturan Storage &amp; Jaringan
-                  </h3>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
+                      Langkah 3: Praktik Hands-on Lab di Web Terminal
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Selesaikan 5 misi perintah Linux berikut langsung di simulator terminal browser Anda.
+                    </p>
+                  </div>
                 </div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-700">
-                  Settings &bull; Storage &bull; Network
+
+                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  Interactive Simulator
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-700">
-                Klik kanan nama VM <code>Ubuntu-Server-22.04</code> &rarr; pilih <b>Settings (Pengaturan)</b>:
-              </p>
+              {/* Terminal Simulator Component */}
+              <InteractiveLabTerminal />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <h4 className="font-bold text-slate-900 text-xs mb-1">
-                    💾 Menu Storage (Penyimpanan)
-                  </h4>
-                  <p className="text-xs text-slate-600">
-                    Pastikan Controller IDE/SATA memuat icon optical disc yang mengarah pada berkas ISO installer Ubuntu Server.
-                  </p>
-                </div>
+              {/* Challenge navigation button */}
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <button
+                  onClick={() => goToPrevStep(3)}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold cursor-pointer"
+                >
+                  &larr; Kembali ke Teori
+                </button>
 
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200">
-                  <h4 className="font-bold text-slate-900 text-xs mb-1">
-                    🌐 Menu Network (Jaringan)
-                  </h4>
-                  <p className="text-xs text-slate-600">
-                    Pada <b>Adapter 1</b>, default adalah mode <b>NAT</b>. Mode ini memungkinkan VM langsung mengakses internet untuk kebutuhan download update apt.
-                  </p>
-                </div>
+                <button
+                  onClick={() => {
+                    completeLab("pertemuan-1");
+                    goToNextStep(3);
+                  }}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Misi Lab Selesai &amp; Buka Checklist Portofolio</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
-
-              {/* Screenshot / Placeholder Tahap 3 */}
-              <LabImage
-                src="/images/cloud-computing/pertemuan-1/gambar3_konfigurasi_jaringan.png"
-                alt="Skema Mode Jaringan NAT vs Bridged"
-                caption="Gambar 1.4: Karakteristik Mode Jaringan NAT vs Bridged Adapter pada VirtualBox"
-                placeholderGuide="Diagram atau screenshot menu Network Settings VirtualBox yang menampilkan opsi 'Attached to: NAT'."
-                suggestedFileName="gambar3_konfigurasi_jaringan.png"
-              />
             </div>
+          </div>
+        )}
 
-            {/* Tahap 4 */}
-            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-4 shadow-xs">
+        {/* ========================================================================= */}
+        {/* STEP 4: CHECKLIST PRAKTIKUM & SCREENSHOT PORTOFOLIO */}
+        {/* ========================================================================= */}
+        {currentStep === 4 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="h-8 w-8 rounded-xl bg-emerald-100 text-emerald-700 font-extrabold flex items-center justify-center text-sm">
+                <div className="flex items-center gap-2.5">
+                  <span className="h-8 w-8 rounded-xl bg-amber-100 text-amber-700 font-extrabold flex items-center justify-center text-sm">
                     4
                   </span>
-                  <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
-                    Tahap 4: Uji Coba Boot Pertama &amp; Pembuatan Snapshot
-                  </h3>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
+                      Langkah 4: Panduan VirtualBox &amp; Checklist Bukti Praktikum
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Pastikan Anda telah melakukan 4 tahapan praktikum di komputer lab fisik.
+                    </p>
+                  </div>
                 </div>
-                <span className="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
-                  Checkpoint Selesai
-                </span>
               </div>
 
-              <ol className="list-decimal list-inside space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                <li>
-                  Pilih VM <code>Ubuntu-Server-22.04</code> lalu klik tombol <b>Start (Mulai)</b>.
-                </li>
-                <li>
-                  Pastikan jendela VM terbuka dan menampilkan menu bootloader <b>GNU GRUB</b> dengan opsi:{" "}
-                  <code className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
-                    &gt; Try or Install Ubuntu Server
-                  </code>.
-                </li>
-                <li>
-                  <b>Checkpoint Selesai:</b> Tutup jendela VM &rarr; pilih <b>Power off the machine</b>.
-                </li>
-                <li>
-                  Di menu VirtualBox, klik tab <b>Snapshots</b> &rarr; klik <b>Take</b> &rarr; Beri nama:{" "}
-                  <code className="font-bold text-emerald-700">Ptm 1 - VM Ready Pre-Install</code>.
-                </li>
-              </ol>
-
-              {/* Screenshot / Placeholder Tahap 4 */}
-              <LabImage
-                src="/images/cloud-computing/pertemuan-1/gambar5_grub_boot_snapshot.png"
-                alt="Booting GNU GRUB dan Snapshot"
-                caption="Gambar 1.5: Tampilan Bootloader GNU GRUB Ubuntu Server & Pengambilan Checkpoint Snapshot"
-                placeholderGuide="Tangkapan layar jendela VM yang menampilkan menu GNU GRUB (> Try or Install Ubuntu Server) dan tab Snapshot di VirtualBox."
-                suggestedFileName="gambar5_grub_boot_snapshot.png"
-              />
-
-              <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2.5">
-                <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
-                <span>
-                  ✅ <b>Luar Biasa!</b> Lingkungan virtualisasi Ubuntu Server Anda sudah 100% siap. Silakan ambil 4
-                  screenshot bukti praktikum untuk diverifikasi pada penilaian tugas.
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* SINTAKS CHEATSHEET UBUNTU DENGAN TOMBOL SALIN */}
-      <section id="cheatsheet" className="py-16 md:py-20 bg-white border-y border-slate-200/80">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-teal-600 mb-2 block">
-              Library Perintah Siswa
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Cheatsheet Perintah CLI Ubuntu Server
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Gunakan tombol <b>"Salin"</b> di bawah untuk menyalin sintaks perintah langsung ke clipboard.
-            </p>
-
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
-              {[
-                { id: "all", label: "Semua Perintah" },
-                { id: "prep", label: "Persiapan & Hypervisor" },
-                { id: "network", label: "Jaringan (NAT / IP)" },
-                { id: "package", label: "Paket (APT)" },
-                { id: "system", label: "Sistem & Resource" },
-              ].map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => setActiveCategory(category.id)}
-                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                    activeCategory === category.id
-                      ? "bg-slate-900 text-white shadow-sm"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-600"
-                  }`}
-                >
-                  {category.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {filteredSnippets.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 hover:bg-white hover:border-sky-300 hover:shadow-md transition-all duration-200 flex flex-col justify-between"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <h4 className="font-bold text-slate-900 text-sm">{item.title}</h4>
-                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md bg-slate-200/80 text-slate-700">
-                      {item.category}
+              {/* 4 Panduan Praktikum Mandiri */}
+              <div className="space-y-6">
+                {/* 1. BIOS */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-sky-100 text-sky-800">
+                      Tahap 1
+                    </span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      Task Manager Windows
                     </span>
                   </div>
+                  <h4 className="font-bold text-slate-900 text-sm">
+                    Verifikasi CPU Virtualization: Enabled
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Buka Task Manager (Ctrl+Shift+Esc) &rarr; Tab Performance &rarr; CPU &rarr; Pastikan
+                    Virtualization: <b>Enabled</b>.
+                  </p>
+                  <LabImage
+                    src="/images/cloud-computing/pertemuan-1/gambar2_task_manager_vtx.png"
+                    alt="Task Manager CPU Virtualization"
+                    caption="Gambar 1.2: Memastikan status Virtualization: Enabled pada Task Manager"
+                    placeholderGuide="Screenshot tampilan Task Manager Windows (Performance -> CPU) yang menunjukkan informasi 'Virtualization: Enabled'."
+                    suggestedFileName="gambar2_task_manager_vtx.png"
+                  />
+                </div>
 
-                  <p className="text-xs text-slate-600">{item.description}</p>
+                {/* 2. Wizard */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800">
+                      Tahap 2
+                    </span>
+                    <span className="text-xs font-bold text-rose-600">
+                      Wajib: Skip Unattended!
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-slate-900 text-sm">
+                    Pembuatan VM di VirtualBox (RAM 2GB, 2 CPU, Disk 25GB)
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Buka VirtualBox &rarr; Klik New &rarr; Beri nama <code>Ubuntu-Server-22.04</code> &rarr;
+                    Centang <b>Skip Unattended Installation</b>.
+                  </p>
+                  <LabImage
+                    src="/images/cloud-computing/pertemuan-1/gambar2_panduan_wizard_vm.png"
+                    alt="Wizard VM Ubuntu Server"
+                    caption="Gambar 1.3: Konfigurasi formulir Wizard New VM di VirtualBox"
+                    placeholderGuide="Screenshot formulir pembuatan New VM di VirtualBox dengan centang Skip Unattended."
+                    suggestedFileName="gambar2_panduan_wizard_vm.png"
+                  />
+                </div>
 
-                  <div className="rounded-xl bg-slate-900 p-3.5 border border-slate-800 text-white flex items-center justify-between gap-3">
-                    <div className="font-mono text-xs overflow-x-auto text-sky-300 py-0.5">
-                      <span className="text-emerald-400 select-none mr-2 font-bold">$</span>
-                      {item.command}
+                {/* 3. Network */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-teal-100 text-teal-800">
+                      Tahap 3
+                    </span>
+                    <span className="text-xs font-semibold text-slate-500">
+                      Settings Network
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-slate-900 text-sm">
+                    Pengecekan Adapter Jaringan Mode NAT
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Klik kanan VM &rarr; Settings &rarr; Network &rarr; Pastikan Adapter 1 terpasang pada mode <b>NAT</b>.
+                  </p>
+                  <LabImage
+                    src="/images/cloud-computing/pertemuan-1/gambar3_konfigurasi_jaringan.png"
+                    alt="Konfigurasi Network NAT"
+                    caption="Gambar 1.4: Konfigurasi Mode Jaringan NAT pada VirtualBox"
+                    placeholderGuide="Screenshot menu Network Settings VirtualBox menampilkan Attached to: NAT."
+                    suggestedFileName="gambar3_konfigurasi_jaringan.png"
+                  />
+                </div>
+
+                {/* 4. Boot & Snapshot */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                      Tahap 4
+                    </span>
+                    <span className="text-xs font-bold text-emerald-700">
+                      Checkpoint Aman
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-slate-900 text-sm">
+                    Uji Booting GRUB &amp; Pembuatan Snapshot
+                  </h4>
+                  <p className="text-xs text-slate-600">
+                    Jalankan VM hingga muncul bootloader GNU GRUB (<code>&gt; Try or Install Ubuntu Server</code>),
+                    lalu matikan dan simpan Snapshot: <code>Ptm 1 - VM Ready Pre-Install</code>.
+                  </p>
+                  <LabImage
+                    src="/images/cloud-computing/pertemuan-1/gambar5_grub_boot_snapshot.png"
+                    alt="Menu GNU GRUB dan Snapshot"
+                    caption="Gambar 1.5: Menu Bootloader GNU GRUB & Checkpoint Snapshot"
+                    placeholderGuide="Screenshot jendela VM menu GNU GRUB dan tab Snapshot VirtualBox."
+                    suggestedFileName="gambar5_grub_boot_snapshot.png"
+                  />
+                </div>
+              </div>
+
+              {/* Student Checklist Validation Box */}
+              <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-3">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
+                  <CheckSquare className="h-4 w-4 text-amber-700" />
+                  <span>Lembar Verifikasi Mandiri Siswa</span>
+                </h4>
+                <p className="text-xs text-amber-800">
+                  Centang pernyataan di bawah ini untuk mengonfirmasi bahwa Anda telah mempraktikkan langkah di atas:
+                </p>
+
+                <div className="space-y-2 text-xs text-slate-800">
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={checklist.bios}
+                      onChange={(e) => setChecklist({ ...checklist, bios: e.target.checked })}
+                      className="rounded text-sky-600 focus:ring-sky-500"
+                    />
+                    <span>Saya sudah memeriksa Virtualization: Enabled di Task Manager.</span>
+                  </label>
+
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={checklist.wizard}
+                      onChange={(e) => setChecklist({ ...checklist, wizard: e.target.checked })}
+                      className="rounded text-sky-600 focus:ring-sky-500"
+                    />
+                    <span>Saya sudah membuat VM dengan alokasi RAM 2GB, 2 CPU, dan mencentang Skip Unattended.</span>
+                  </label>
+
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={checklist.network}
+                      onChange={(e) => setChecklist({ ...checklist, network: e.target.checked })}
+                      className="rounded text-sky-600 focus:ring-sky-500"
+                    />
+                    <span>Saya sudah memeriksa Adapter Jaringan berada pada mode NAT.</span>
+                  </label>
+
+                  <label className="flex items-center gap-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={checklist.snapshot}
+                      onChange={(e) => setChecklist({ ...checklist, snapshot: e.target.checked })}
+                      className="rounded text-sky-600 focus:ring-sky-500"
+                    />
+                    <span>Saya sudah menguji boot GNU GRUB dan membuat snapshot 'Ptm 1 - VM Ready Pre-Install'.</span>
+                  </label>
+                </div>
+              </div>
+
+              {/* Action */}
+              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <button
+                  onClick={() => goToPrevStep(4)}
+                  className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold cursor-pointer"
+                >
+                  &larr; Kembali ke Simulator Lab
+                </button>
+
+                <button
+                  onClick={() => {
+                    completePortfolio("pertemuan-1");
+                    goToNextStep(4);
+                  }}
+                  disabled={!checklist.bios || !checklist.wizard || !checklist.network || !checklist.snapshot}
+                  className="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Konfirmasi Checklist &amp; Buka Post-Test</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* STEP 5: POST-TEST EVALUASI KOMPETENSI */}
+        {/* ========================================================================= */}
+        {currentStep === 5 && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-2.5">
+                  <span className="h-8 w-8 rounded-xl bg-purple-100 text-purple-700 font-extrabold flex items-center justify-center text-sm">
+                    5
+                  </span>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base sm:text-lg">
+                      Langkah 5: Post-Test Evaluasi Hasil Belajar
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Uji komprehensif pemahaman praktikum. Capai skor minimal KKM 75 untuk membuka sertifikat digital!
+                    </p>
+                  </div>
+                </div>
+
+                {postTestSubmitted && (
+                  <div
+                    className={`px-3 py-1 rounded-xl border text-xs font-bold font-mono ${
+                      postTestScore >= 75
+                        ? "bg-emerald-50 border-emerald-300 text-emerald-800"
+                        : "bg-rose-50 border-rose-300 text-rose-800"
+                    }`}
+                  >
+                    Skor: {postTestScore} / 100 {postTestScore >= 75 ? "(LULUS)" : "(REMEDIAL)"}
+                  </div>
+                )}
+              </div>
+
+              <form onSubmit={handlePostTestSubmit} className="space-y-6 pt-2">
+                {postTestQuestions.map((q, idx) => (
+                  <div
+                    key={q.id}
+                    className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-3"
+                  >
+                    <div className="font-bold text-xs sm:text-sm text-slate-900 flex items-start gap-2">
+                      <span className="text-purple-600 font-mono">{idx + 1}.</span>
+                      <span>{q.q}</span>
                     </div>
 
-                    <button
-                      onClick={() => handleCopy(item.id, item.command)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shrink-0 cursor-pointer ${
-                        copiedId === item.id
-                          ? "bg-emerald-600 text-white shadow-sm"
-                          : "bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700"
-                      }`}
-                    >
-                      {copiedId === item.id ? (
-                        <>
-                          <Check className="h-3.5 w-3.5 text-white" />
-                          <span>Tersalin!</span>
-                        </>
+                    <div className="space-y-2 pl-4">
+                      {q.options.map((opt, optIdx) => (
+                        <label
+                          key={optIdx}
+                          className={`flex items-center gap-3 p-3 rounded-xl border text-xs cursor-pointer transition-all ${
+                            postTestAnswers[idx] === optIdx
+                              ? "bg-purple-50 border-purple-400 text-purple-900 font-semibold shadow-xs"
+                              : "bg-white border-slate-200 hover:border-slate-300 text-slate-700"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name={`posttest-${idx}`}
+                            checked={postTestAnswers[idx] === optIdx}
+                            onChange={() =>
+                              setPostTestAnswers((prev) => ({
+                                ...prev,
+                                [idx]: optIdx,
+                              }))
+                            }
+                            className="text-purple-600 focus:ring-purple-500"
+                          />
+                          <span>{opt}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+
+                {!postTestSubmitted ? (
+                  <button
+                    type="submit"
+                    disabled={Object.keys(postTestAnswers).length < postTestQuestions.length}
+                    className="w-full py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm shadow-md transition-all disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span>Kirim Jawaban Post-Test &amp; Lihat Nilai</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                ) : (
+                  <div
+                    className={`p-5 rounded-2xl border space-y-3 ${
+                      postTestScore >= 75
+                        ? "bg-emerald-50 border-emerald-200 text-emerald-900"
+                        : "bg-rose-50 border-rose-200 text-rose-900"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="font-extrabold text-sm sm:text-base flex items-center gap-2">
+                        {postTestScore >= 75 ? (
+                          <>
+                            <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                            <span>SELAMAT! Anda Lulus dengan Skor {postTestScore} / 100</span>
+                          </>
+                        ) : (
+                          <>
+                            <AlertTriangle className="h-5 w-5 text-rose-600" />
+                            <span>Skor Anda: {postTestScore} / 100 (Belum Mencapai KKM 75)</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <p className="text-xs leading-relaxed">
+                      {postTestScore >= 75
+                        ? "Kompetensi dasar Pertemuan 1 Anda telah tervalidasi dengan sangat baik. Silakan buka Sertifikat Digital kelulusan Anda pada Langkah 6!"
+                        : "Jangan berkecil hati! Anda dapat mengulang kembali kuis Post-Test ini (Remedial) sampai mencapai nilai minimal 75 untuk membuka sertifikat kelulusan."}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                      {postTestScore >= 75 ? (
+                        <button
+                          type="button"
+                          onClick={() => goToNextStep(5)}
+                          className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          <span>Buka Sertifikat Kelulusan Digital (Langkah 6)</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
                       ) : (
-                        <>
-                          <Copy className="h-3.5 w-3.5 text-sky-400" />
-                          <span>Salin</span>
-                        </>
+                        <button
+                          type="button"
+                          onClick={() => setPostTestSubmitted(false)}
+                          className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs sm:text-sm shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                        >
+                          <RotateCcw className="h-4 w-4" />
+                          <span>Ulangi Kuis Post-Test (Remedial)</span>
+                        </button>
                       )}
-                    </button>
+                    </div>
                   </div>
-                </div>
+                )}
+              </form>
+            </div>
+          </div>
+        )}
 
-                <div className="mt-3.5 pt-3 border-t border-slate-200/70 text-[11px] text-slate-500 leading-normal">
-                  <b className="text-slate-700">Penjelasan Teknis:</b> {item.explanation}
+        {/* ========================================================================= */}
+        {/* STEP 6: SERTIFIKAT KOMPETENSI DIGITAL */}
+        {/* ========================================================================= */}
+        {currentStep === 6 && (
+          <div className="space-y-6 animate-fade-in">
+            <DigitalCertificate
+              studentName={user.isLoggedIn ? user.name : "Ahmad Fauzan Pratama"}
+              studentClass={user.isLoggedIn ? user.kelas : "XI TKJ 1"}
+              studentNis={user.isLoggedIn ? user.nis : "2401001"}
+              meetingNumber={1}
+              meetingTitle="Pengenalan Virtualisasi & Persiapan VM Ubuntu Server 22.04 LTS"
+              finalScore={progress.finalGrade || postTestScore || 90}
+              certifiedAt={
+                progress.certifiedAt ||
+                new Date().toLocaleDateString("id-ID", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })
+              }
+            />
+
+            {/* Next Meeting Recommendation Banner */}
+            <div className="p-6 rounded-3xl bg-gradient-to-r from-slate-900 to-sky-950 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-1 text-center md:text-left">
+                <div className="text-xs font-bold text-sky-400 uppercase tracking-wider">
+                  Materi Selanjutnya Telah Tersedia!
                 </div>
+                <h4 className="text-lg font-bold text-white">
+                  Siap Melanjutkan ke Pertemuan 02?
+                </h4>
+                <p className="text-xs text-slate-300 max-w-lg">
+                  Langkah berikutnya: Instalasi Sistem Operasi Ubuntu Server 22.04 LTS
+                  (CLI Mode), konfigurasi partisi LVM, dan setup OpenSSH server.
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* 6 ALUR BELAJAR SISWA */}
-      <section className="py-16 md:py-20 bg-slate-50 border-b border-slate-200/80">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 mb-2 block">
-              Kurikulum Standar Industri
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              6 Tahapan Pembelajaran Mandiri
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 mt-2">
-              Alur belajar mandiri terstruktur dari Pre-Test hingga penerbitan sertifikat digital.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {learningSteps.map((step) => (
-              <div
-                key={step.step}
-                className="rounded-2xl bg-white border border-slate-200 p-6 relative hover:shadow-lg transition-all flex flex-col justify-between"
+              <Link
+                href="/kelas/cloud-computing/pertemuan-2"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs sm:text-sm shadow-md transition-all shrink-0"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-3xl font-black text-slate-200 font-mono">
-                      {step.step}
-                    </span>
-                    <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${step.color}`}
-                    >
-                      {step.tag}
-                    </span>
-                  </div>
+                <span>Buka Materi Pertemuan 02</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </div>
+        )}
+      </main>
 
-                  <h3 className="text-base font-bold text-slate-900 mb-2">
-                    {step.title}
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    {step.desc}
-                  </p>
-                </div>
+      {/* MOBILE-FRIENDLY BOTTOM STICKY NAVIGATION BAR */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-3 shadow-lg">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
+          <button
+            onClick={() => goToPrevStep(currentStep)}
+            disabled={currentStep === 1}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-semibold disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Langkah Sebelumnya</span>
+            <span className="sm:hidden">Kembali</span>
+          </button>
 
-                <div className="mt-5 pt-4 border-t border-slate-100 flex items-center text-xs font-semibold text-sky-600">
-                  <span>Tahap Wajib Pertemuan 1</span>
-                  <CheckCircle2 className="h-4 w-4 ml-auto text-emerald-500" />
-                </div>
-              </div>
-            ))}
+          <div className="text-center">
+            <span className="text-slate-400 text-[10px] uppercase font-bold block sm:inline mr-1">
+              Langkah
+            </span>
+            <span className="font-extrabold text-slate-900">
+              {currentStep} <span className="text-slate-400 font-normal">dari 6</span>
+            </span>
           </div>
 
-          {/* Navigation to Syllabus / Back */}
-          <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <Link
-              href="/kelas/cloud-computing"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-sky-600 hover:text-sky-500"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              <span>Kembali ke Silabus Lengkap Cloud Computing</span>
-            </Link>
-
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-slate-700"
-            >
-              <span>Halaman Utama Portal Guru</span>
-            </Link>
-          </div>
+          <button
+            onClick={() => goToNextStep(currentStep)}
+            disabled={currentStep === 6}
+            className={`inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold transition-all ${
+              currentStep === 6
+                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                : isStepUnlocked(currentStep + 1)
+                ? "bg-slate-900 text-white hover:bg-slate-800 shadow-sm"
+                : "bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200"
+            }`}
+          >
+            <span className="hidden sm:inline">Langkah Berikutnya</span>
+            <span className="sm:hidden">Lanjut</span>
+            {isStepUnlocked(currentStep + 1) ? (
+              <ArrowRight className="h-4 w-4" />
+            ) : (
+              <Lock className="h-3.5 w-3.5 text-amber-700" />
+            )}
+          </button>
         </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="mt-auto bg-slate-950 text-slate-400 text-xs border-t border-slate-800 py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-white font-semibold">
-            <Cloud className="h-4 w-4 text-sky-400" />
-            <span>Pertemuan 01 &bull; Kelas Cloud Computing &bull; Wahyu Rahmat Hidayat, S.Kom.</span>
-          </div>
-          <p className="text-[11px] text-slate-500">
-            SMK Telkom Lampung &bull; Teknik Jaringan Komputer &amp; Telekomunikasi
-          </p>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }
