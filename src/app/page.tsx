@@ -1202,193 +1202,285 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. KONSULTASI & BANTUAN BELAJAR: 6 SALURAN RESMI + QUICK FORM */}
+      {/* 6. KONSULTASI & BANTUAN BELAJAR: MODULAR TECH CONSOLE + 6 SALURAN RESMI */}
       {/* ========================================================================= */}
       <section id="konsultasi" className="py-16 md:py-24 bg-slate-50/70 border-b border-slate-200">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
-          {/* Header (Clean tanpa badge box) */}
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-8">
+          {/* Header */}
           <div className="text-center max-w-3xl mx-auto space-y-2">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               Konsultasi &amp; Bantuan Belajar Siswa
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Siswa dapat berkonsultasi seputar kendala praktikum lab, penugasan, maupun materi kejuruan melalui saluran resmi Pak Wahyu di bawah ini.
+              Pusat layanan komunikasi pendidik dan bantuan teknis praktikum bagi siswa SMK Telkom Lampung seputar modul kejuruan, konfigurasi lab, maupun kendala sistem.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            {/* Left Column: 6 Official Contact Channels */}
-            <div className="lg:col-span-7 space-y-4">
-              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
-                <h3 className="font-extrabold text-base text-slate-900">
-                  Saluran Komunikasi Resmi:
-                </h3>
+          {/* Console Status Ribbon */}
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-white border border-slate-200 text-xs font-mono font-bold text-slate-700">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-emerald-500"></span>
+              <span>GATEWAY://STUDENT-HELP-DESK</span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-500 text-[11px]">
+              <span className="text-emerald-700 font-bold flex items-center gap-1.5">
+                <span className="w-2 h-2 bg-emerald-500"></span>
+                PAK WAHYU SIAP MEMBANTU
+              </span>
+              <span>&bull;</span>
+              <span>JAM LAYANAN: 07.30 - 16.00 WIB</span>
+            </div>
+          </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* 1. Email */}
-                  <a
-                    href="mailto:wahyu@smktelkom-lpg.sch.id"
-                    className="p-4 rounded-2xl bg-slate-50 hover:bg-sky-50/60 border border-slate-200 hover:border-sky-300 hover:shadow-md transition-all flex items-start gap-3 group"
-                  >
-                    <div className="h-10 w-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-600 group-hover:text-white transition-colors">
-                      <Mail className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase text-slate-400">1. Email Resmi</span>
-                      <p className="font-bold text-xs text-slate-900 truncate">
-                        wahyu@smktelkom-lpg.sch.id
-                      </p>
-                      <span className="text-[11px] text-sky-600 font-semibold">Kirim Email &rarr;</span>
-                    </div>
-                  </a>
-
-                  {/* 2. WhatsApp */}
-                  <a
-                    href="https://wa.me/6282185903635"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all flex items-start gap-3 group"
-                  >
-                    <div className="h-10 w-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                      <MessageCircle className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase text-slate-400">2. WhatsApp Guru</span>
-                      <p className="font-bold text-xs text-slate-900">0821-8590-3635</p>
-                      <span className="text-[11px] text-emerald-600 font-semibold">Chat Langsung &rarr;</span>
-                    </div>
-                  </a>
-
-                  {/* 3. GitHub */}
-                  <a
-                    href="https://github.com/wahyusmkte"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all flex items-start gap-3 group"
-                  >
-                    <div className="h-10 w-10 rounded-xl bg-slate-200 text-slate-800 flex items-center justify-center shrink-0 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-                      <GithubIcon className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase text-slate-400">3. GitHub Repo</span>
-                      <p className="font-bold text-xs text-slate-900">github.com/wahyusmkte</p>
-                      <span className="text-[11px] text-slate-600 font-semibold">Lihat Source Code &rarr;</span>
-                    </div>
-                  </a>
-
-                  {/* 4. Instagram */}
-                  <a
-                    href="https://www.instagram.com/wahyurahmat55/"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-4 rounded-2xl bg-slate-50 hover:bg-pink-50/60 border border-slate-200 hover:border-pink-300 hover:shadow-md transition-all flex items-start gap-3 group"
-                  >
-                    <div className="h-10 w-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-colors">
-                      <InstagramIcon className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase text-slate-400">4. Instagram</span>
-                      <p className="font-bold text-xs text-slate-900">@wahyurahmat55</p>
-                      <span className="text-[11px] text-pink-600 font-semibold">Ikuti Kegiatan &rarr;</span>
-                    </div>
-                  </a>
-
-                  {/* 5. Facebook */}
-                  <a
-                    href="https://www.facebook.com/wahyurahmat.hidayat.399"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-4 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all flex items-start gap-3 group"
-                  >
-                    <div className="h-10 w-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                      <FacebookIcon className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase text-slate-400">5. Facebook</span>
-                      <p className="font-bold text-xs text-slate-900 truncate">Wahyu Rahmat Hidayat</p>
-                      <span className="text-[11px] text-blue-600 font-semibold">Profil Facebook &rarr;</span>
-                    </div>
-                  </a>
-
-                  {/* 6. YouTube */}
-                  <a
-                    href="https://www.youtube.com/@WahyuRahmatHidayat-f3h"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-4 rounded-2xl bg-slate-50 hover:bg-red-50/60 border border-slate-200 hover:border-red-300 hover:shadow-md transition-all flex items-start gap-3 group"
-                  >
-                    <div className="h-10 w-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white transition-colors">
-                      <YoutubeIcon className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-bold uppercase text-slate-400">6. YouTube Channel</span>
-                      <p className="font-bold text-xs text-slate-900 truncate">@WahyuRahmatHidayat-f3h</p>
-                      <span className="text-[11px] text-red-600 font-semibold">Tonton Video Lab &rarr;</span>
-                    </div>
-                  </a>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Left Column: Direct Quick Message Dispatcher */}
+            <div className="lg:col-span-5">
+              <div className="bg-white border border-slate-200 shadow-xs flex flex-col">
+                {/* Console Bar */}
+                <div className="flex items-center justify-between px-4 py-2 bg-slate-900 text-white font-mono text-xs border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-emerald-400"></span>
+                    <span className="font-bold tracking-wider">DISPATCHER://WHATSAPP-TICKET</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-emerald-400 font-bold">DIRECT ROUTING</span>
                 </div>
+
+                <form onSubmit={handleSendWhatsApp} className="p-5 sm:p-6 space-y-4">
+                  <div>
+                    <h3 className="font-extrabold text-base text-slate-900">
+                      Kirim Tiket Pertanyaan
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Pesan akan terformat rapi dan otomatis dialihkan ke WhatsApp pribadi Pak Wahyu.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span>[01] NAMA SISWA *</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Wajib diisi</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Masukkan nama lengkap Anda..."
+                      value={contactName}
+                      onChange={(e) => setContactName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span>[02] KELAS TKJ *</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Pilih rombel</span>
+                    </label>
+                    <select
+                      value={contactClass}
+                      onChange={(e) => setContactClass(e.target.value)}
+                      className="w-full px-3 py-2.5 border border-slate-200 text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium cursor-pointer"
+                    >
+                      <option value="XII TKJ 1">XII TKJ 1</option>
+                      <option value="XII TKJ 2">XII TKJ 2</option>
+                      <option value="XI TKJ 1">XI TKJ 1</option>
+                      <option value="XI TKJ 2">XI TKJ 2</option>
+                      <option value="X TJKT">X TJKT</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="font-mono text-xs font-bold text-slate-700 flex items-center justify-between">
+                      <span>[03] PERTANYAAN / KENDALA LAB *</span>
+                      <span className="text-[10px] text-slate-400 font-normal">Deskripsi kendala</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      required
+                      placeholder="Contoh: Pak, saya mengalami kendala pada langkah partisi LVM di modul Pertemuan 2..."
+                      value={contactMessage}
+                      onChange={(e) => setContactMessage(e.target.value)}
+                      className="w-full px-3.5 py-2.5 border border-slate-200 text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 border border-emerald-600"
+                  >
+                    <Send className="h-4 w-4" />
+                    <span>Kirim Pesan ke WhatsApp Pak Wahyu</span>
+                  </button>
+
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between font-mono text-[10px] text-slate-400">
+                    <span>STATUS: GATEWAY READY</span>
+                    <span>ENCRYPTION: 256-BIT SSL</span>
+                  </div>
+                </form>
               </div>
             </div>
 
-            {/* Right Column: Direct Quick Message Form */}
-            <div className="lg:col-span-5">
-              <form onSubmit={handleSendWhatsApp} className="p-6 sm:p-7 rounded-3xl bg-white border border-slate-200 shadow-md space-y-4">
-                <div>
-                  <h3 className="font-extrabold text-base text-slate-900">
-                    Kirim Pesan Cepat ke Guru
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Isi pertanyaan Anda dan langsung terhubung ke WhatsApp Pak Wahyu.
-                  </p>
+            {/* Right Column: 6 Official Verified Channels Grid */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="bg-white border border-slate-200 shadow-xs flex flex-col">
+                {/* Console Bar */}
+                <div className="flex items-center justify-between px-4 py-2 bg-slate-900 text-white font-mono text-xs border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-sky-400"></span>
+                    <span className="font-bold tracking-wider">CHANNELS://OFFICIAL-VERIFIED-DIRECTORY</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-sky-400 font-bold">06 SALURAN AKTIF</span>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">Nama Siswa *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Contoh: Muhammad Rizki"
-                    value={contactName}
-                    onChange={(e) => setContactName(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
-                  />
-                </div>
+                <div className="p-5 sm:p-6 space-y-4">
+                  <div>
+                    <h3 className="font-extrabold text-base text-slate-900">
+                      Saluran Komunikasi Resmi Pendidik
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Pilih tautan langsung berikut untuk menghubungi Pak Wahyu melalui platform yang Anda gunakan.
+                    </p>
+                  </div>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">Kelas TKJ *</label>
-                  <select
-                    value={contactClass}
-                    onChange={(e) => setContactClass(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
-                  >
-                    <option value="XII TKJ 1">XII TKJ 1</option>
-                    <option value="XII TKJ 2">XII TKJ 2</option>
-                    <option value="XI TKJ 1">XI TKJ 1</option>
-                    <option value="XI TKJ 2">XI TKJ 2</option>
-                    <option value="X TJKT">X TJKT</option>
-                  </select>
-                </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* 1. Email */}
+                    <a
+                      href="mailto:wahyu@smktelkom-lpg.sch.id"
+                      className="p-3.5 bg-slate-50 hover:bg-sky-50/70 border border-slate-200 hover:border-sky-400 transition-all flex items-start gap-3 group"
+                    >
+                      <div className="h-10 w-10 border border-slate-200 bg-white text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-600 group-hover:text-white group-hover:border-sky-600 transition-colors">
+                        <Mail className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[10px] font-bold text-slate-400 uppercase">
+                          MAIL://RESMI
+                        </span>
+                        <p className="font-bold text-xs text-slate-900 truncate">
+                          wahyu@smktelkom-lpg.sch.id
+                        </p>
+                        <span className="text-[11px] text-sky-600 font-semibold group-hover:underline">
+                          Kirim Email Resmi &rarr;
+                        </span>
+                      </div>
+                    </a>
 
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-700">Pesan / Pertanyaan Praktikum *</label>
-                  <textarea
-                    rows={4}
-                    required
-                    placeholder="Contoh: Pak, saya ingin bertanya tentang cara partisi LVM pada Pertemuan 2..."
-                    value={contactMessage}
-                    onChange={(e) => setContactMessage(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
-                  />
-                </div>
+                    {/* 2. WhatsApp */}
+                    <a
+                      href="https://wa.me/6282185903635"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3.5 bg-slate-50 hover:bg-emerald-50/70 border border-slate-200 hover:border-emerald-400 transition-all flex items-start gap-3 group"
+                    >
+                      <div className="h-10 w-10 border border-slate-200 bg-white text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-emerald-600 transition-colors">
+                        <MessageCircle className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[10px] font-bold text-slate-400 uppercase">
+                          WA://RESPON-CEPAT
+                        </span>
+                        <p className="font-bold text-xs text-slate-900">0821-8590-3635</p>
+                        <span className="text-[11px] text-emerald-600 font-semibold group-hover:underline">
+                          Chat Langsung WhatsApp &rarr;
+                        </span>
+                      </div>
+                    </a>
 
-                <button
-                  type="submit"
-                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <Send className="h-4 w-4" />
-                  <span>Kirim via WhatsApp Pak Wahyu</span>
-                </button>
-              </form>
+                    {/* 3. GitHub */}
+                    <a
+                      href="https://github.com/wahyusmktel"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 transition-all flex items-start gap-3 group"
+                    >
+                      <div className="h-10 w-10 border border-slate-200 bg-white text-slate-800 flex items-center justify-center shrink-0 group-hover:bg-slate-900 group-hover:text-white group-hover:border-slate-900 transition-colors">
+                        <GithubIcon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[10px] font-bold text-slate-400 uppercase">
+                          GIT://SOURCE-REPO
+                        </span>
+                        <p className="font-bold text-xs text-slate-900">github.com/wahyusmktel</p>
+                        <span className="text-[11px] text-slate-600 font-semibold group-hover:underline">
+                          Buka Profil GitHub &rarr;
+                        </span>
+                      </div>
+                    </a>
+
+                    {/* 4. Instagram */}
+                    <a
+                      href="https://www.instagram.com/wahyurahmat55/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3.5 bg-slate-50 hover:bg-pink-50/70 border border-slate-200 hover:border-pink-400 transition-all flex items-start gap-3 group"
+                    >
+                      <div className="h-10 w-10 border border-slate-200 bg-white text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white group-hover:border-pink-600 transition-colors">
+                        <InstagramIcon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[10px] font-bold text-slate-400 uppercase">
+                          IG://KEGIATAN-VOKASI
+                        </span>
+                        <p className="font-bold text-xs text-slate-900">@wahyurahmat55</p>
+                        <span className="text-[11px] text-pink-600 font-semibold group-hover:underline">
+                          Ikuti di Instagram &rarr;
+                        </span>
+                      </div>
+                    </a>
+
+                    {/* 5. Facebook */}
+                    <a
+                      href="https://www.facebook.com/wahyurahmat.hidayat.399"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3.5 bg-slate-50 hover:bg-blue-50/70 border border-slate-200 hover:border-blue-400 transition-all flex items-start gap-3 group"
+                    >
+                      <div className="h-10 w-10 border border-slate-200 bg-white text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 transition-colors">
+                        <FacebookIcon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[10px] font-bold text-slate-400 uppercase">
+                          FB://PROFIL-RESMI
+                        </span>
+                        <p className="font-bold text-xs text-slate-900 truncate">Wahyu Rahmat Hidayat</p>
+                        <span className="text-[11px] text-blue-600 font-semibold group-hover:underline">
+                          Profil Facebook &rarr;
+                        </span>
+                      </div>
+                    </a>
+
+                    {/* 6. YouTube */}
+                    <a
+                      href="https://www.youtube.com/@WahyuRahmatHidayat-f3h"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-3.5 bg-slate-50 hover:bg-red-50/70 border border-slate-200 hover:border-red-400 transition-all flex items-start gap-3 group"
+                    >
+                      <div className="h-10 w-10 border border-slate-200 bg-white text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600 transition-colors">
+                        <YoutubeIcon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="font-mono text-[10px] font-bold text-slate-400 uppercase">
+                          YT://VIDEO-TUTORIAL
+                        </span>
+                        <p className="font-bold text-xs text-slate-900 truncate">@WahyuRahmatHidayat-f3h</p>
+                        <span className="text-[11px] text-red-600 font-semibold group-hover:underline">
+                          Tonton Praktikum Lab &rarr;
+                        </span>
+                      </div>
+                    </a>
+                  </div>
+
+                  {/* Informational SLA Card */}
+                  <div className="border border-slate-200 bg-slate-50 p-4 space-y-1.5">
+                    <div className="flex items-center justify-between font-mono text-[11px] text-slate-700 font-bold">
+                      <span>LOKASI RUANG GURU &amp; KONSULTASI OFFLINE</span>
+                      <span className="text-sky-700">SMK TELKOM LAMPUNG</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed text-slate-500">
+                      Siswa yang memerlukan bimbingan langsung, perbaikan nilai / remedial praktikum, atau konsultasi perangkat keras dapat menemui Pak Wahyu di Laboratorium Komputer TKJ pada jam istirahat sekolah.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1477,14 +1569,14 @@ export default function HomePage() {
               <div className="space-y-2 text-xs">
                 <Link
                   href="/kelas/cloud-computing"
-                  className="block p-3 rounded-2xl bg-slate-700/60 border border-slate-600 hover:border-sky-400 transition-colors"
+                  className="block p-3 rounded-none bg-slate-700/60 border border-slate-600 hover:border-sky-400 transition-colors"
                 >
                   <div className="font-bold text-white">Cloud Computing (Aktif)</div>
                   <div className="text-[11px] text-slate-300">
                     Virtualisasi KVM, VirtualBox, &amp; Ubuntu Server 22.04 LTS
                   </div>
                 </Link>
-                <div className="p-3 rounded-2xl bg-slate-700/30 border border-slate-700 text-slate-400">
+                <div className="p-3 rounded-none bg-slate-700/30 border border-slate-700 text-slate-400">
                   <div className="font-semibold">Administrasi Server (ASJ) &bull; Segera Hadir</div>
                 </div>
               </div>
@@ -1497,7 +1589,7 @@ export default function HomePage() {
               &copy; {new Date().getFullYear()} TEKAJE LABS &bull; SMK Telkom Lampung &bull; Pendidik: Wahyu Rahmat Hidayat, S.Kom.
             </div>
             <div className="flex items-center gap-4">
-              <a href="https://github.com/wahyusmkte" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
+              <a href="https://github.com/wahyusmktel" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 GitHub
               </a>
               <a href="https://instagram.com/wahyurahmat55" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
