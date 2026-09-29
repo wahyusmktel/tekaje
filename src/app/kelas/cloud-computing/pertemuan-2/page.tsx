@@ -20,7 +20,6 @@ import {
   BookOpen,
   CheckCircle2,
   ChevronRight,
-  Sparkles,
   HelpCircle,
   Clock,
   Award,
@@ -223,7 +222,7 @@ export default function PertemuanDuaPage() {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900 pb-24 sm:pb-16">
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 h-18 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/kelas/cloud-computing"
@@ -271,9 +270,9 @@ export default function PertemuanDuaPage() {
       {/* STUDENT CALLOUT BANNER */}
       {!user.isLoggedIn && (
         <div className="bg-indigo-50 border-b border-indigo-200 px-4 py-3">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-indigo-900">
+          <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-indigo-900">
             <div className="flex items-center gap-2 text-center sm:text-left">
-              <Sparkles className="h-4 w-4 text-indigo-600 shrink-0" />
+              <GraduationCap className="h-4 w-4 text-indigo-600 shrink-0" />
               <span>
                 <b>Halo Siswa!</b> Anda belum memasukkan nama lengkap.
                 Masuk terlebih dahulu agar <b>Nilai Praktikum &amp; Sertifikat Digital</b> Pertemuan 2 tercatat atas namamu!
@@ -290,7 +289,7 @@ export default function PertemuanDuaPage() {
       )}
 
       {/* MAIN STEP CONTENT CONTAINER */}
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+      <main className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 py-8 flex-1 w-full space-y-8">
         {/* ========================================================================= */}
         {/* STEP 1: PRE-TEST PERTEMUAN 2 */}
         {/* ========================================================================= */}
@@ -963,7 +962,7 @@ export default function PertemuanDuaPage() {
 
       {/* MOBILE-FRIENDLY BOTTOM STICKY NAVIGATION BAR */}
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-4 py-3 shadow-lg">
-        <div className="max-w-5xl mx-auto flex items-center justify-between gap-3 text-xs">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 flex items-center justify-between gap-3 text-xs">
           <button
             onClick={() => goToPrevStep(currentStep)}
             disabled={currentStep === 1}

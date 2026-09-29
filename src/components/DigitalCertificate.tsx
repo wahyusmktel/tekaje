@@ -5,7 +5,6 @@ import {
   Award,
   CheckCircle2,
   Printer,
-  Sparkles,
   ShieldCheck,
   GraduationCap,
   Calendar,

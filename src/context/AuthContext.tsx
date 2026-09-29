@@ -20,10 +20,13 @@ export interface StudentProgress {
 }
 
 export interface UserProfile {
+  id?: number;
+  username?: string;
   name: string;
   role: UserRole;
   kelas: string;
   nis: string;
+  enrolledCourses?: string[];
   isLoggedIn: boolean;
 }
 
@@ -46,6 +49,7 @@ interface AuthContextType {
   openLoginModal: () => void;
   closeLoginModal: () => void;
   loginAsStudent: (name: string, kelas: string, nis: string) => void;
+  loginWithCredentials: (username: string, pass: string) => Promise<{ success: boolean; message?: string }>;
   loginAsTeacher: () => void;
   logout: () => void;
   // Progress management
@@ -185,6 +189,43 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("tekaje_user", JSON.stringify(newUser));
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const loginWithCredentials = async (
+    username: string,
+    pass: string
+  ): Promise<{ success: boolean; message?: string }> => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password: pass }),
+      });
+      const data = await res.json();
+      if (data.success && data.user) {
+        const u = data.user;
+        const profile: UserProfile = {
+          id: u.id,
+          username: u.username,
+          name: u.name,
+          role: u.role,
+          kelas: u.class_name,
+          nis: u.nis || "",
+          enrolledCourses: u.enrollments || [],
+          isLoggedIn: true,
+        };
+        saveUser(profile);
+        if (u.role === "guru") {
+          setTeacherBypassLocks(true);
+        }
+        setIsLoginModalOpen(false);
+        return { success: true };
+      } else {
+        return { success: false, message: data.message || "Login gagal" };
+      }
+    } catch (err: any) {
+      return { success: false, message: "Koneksi database server gagal: " + err.message };
     }
   };
 
@@ -359,6 +400,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         openLoginModal: () => setIsLoginModalOpen(true),
         closeLoginModal: () => setIsLoginModalOpen(false),
         loginAsStudent,
+        loginWithCredentials,
         loginAsTeacher,
         logout,
         getProgress,

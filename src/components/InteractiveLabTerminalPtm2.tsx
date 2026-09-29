@@ -7,7 +7,6 @@ import {
   Circle,
   Play,
   RotateCcw,
-  Sparkles,
   Award,
   ChevronRight,
   Info,

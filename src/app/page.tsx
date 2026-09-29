@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   Award,
   ChevronRight,
-  Sparkles,
   Mail,
   MapPin,
   Clock,
@@ -146,6 +145,12 @@ export default function HomePage() {
             <a href="#kontak" className="hover:text-sky-600 transition-colors">
               Kontak
             </a>
+            <Link
+              href="/manajemen-guru"
+              className="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/60 transition-colors"
+            >
+              Kelola Siswa
+            </Link>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -173,7 +178,7 @@ export default function HomePage() {
             {/* Left Column: Bio & Greeting */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 text-sky-600" />
+                <GraduationCap className="h-3.5 w-3.5 text-sky-600" />
                 <span>Portal Resmi Pengajar &bull; SMK Telkom Lampung</span>
               </div>
 

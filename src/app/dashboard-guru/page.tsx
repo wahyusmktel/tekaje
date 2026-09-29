@@ -16,8 +16,8 @@ import {
   GraduationCap,
   Unlock,
   Lock,
-  Sparkles,
   BookOpen,
+  UserPlus,
 } from "lucide-react";
 
 export default function TeacherDashboardPage() {
@@ -128,6 +128,14 @@ export default function TeacherDashboardPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <Link
+              href="/manajemen-guru"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/80 transition-colors"
+            >
+              <UserPlus className="h-3.5 w-3.5" />
+              <span>Kelola Akun Siswa</span>
+            </Link>
+
             <button
               onClick={() => setTeacherBypassLocks(!teacherBypassLocks)}
               className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${

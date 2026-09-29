@@ -16,7 +16,6 @@ import {
   Lock,
   ArrowRight,
   GraduationCap,
-  Sparkles,
   FileText,
   UserCheck,
 } from "lucide-react";
@@ -222,7 +221,7 @@ export default function CloudComputingSyllabusPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-8 space-y-4">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100/70 border border-sky-200 text-sky-800 text-xs font-semibold">
-                <Sparkles className="h-3.5 w-3.5 text-sky-600" />
+                <GraduationCap className="h-3.5 w-3.5 text-sky-600" />
                 <span>Kurikulum Berbasis Vokasi &amp; Standar Industri</span>
               </div>
 

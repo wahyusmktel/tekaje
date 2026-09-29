@@ -4,7 +4,6 @@ import { useAuth } from "@/context/AuthContext";
 import {
   CheckCircle2,
   Lock,
-  Sparkles,
   Unlock,
   AlertCircle,
   FileQuestion,

@@ -10,7 +10,7 @@ import {
   LogOut,
   ChevronDown,
   LayoutDashboard,
-  Sparkles,
+  Users,
 } from "lucide-react";
 
 export default function UserNavPill() {
@@ -69,14 +69,24 @@ export default function UserNavPill() {
           </div>
 
           {user.role === "guru" && (
-            <Link
-              href="/dashboard-guru"
-              onClick={() => setDropdownOpen(false)}
-              className="flex items-center gap-2 p-2 rounded-xl hover:bg-indigo-50 text-indigo-700 font-semibold transition-colors"
-            >
-              <LayoutDashboard className="h-4 w-4" />
-              <span>Dashboard Rekap Nilai</span>
-            </Link>
+            <>
+              <Link
+                href="/manajemen-guru"
+                onClick={() => setDropdownOpen(false)}
+                className="flex items-center gap-2 p-2 rounded-xl hover:bg-indigo-50 text-indigo-700 font-semibold transition-colors"
+              >
+                <Users className="h-4 w-4" />
+                <span>Manajemen Siswa &amp; Kelas</span>
+              </Link>
+              <Link
+                href="/dashboard-guru"
+                onClick={() => setDropdownOpen(false)}
+                className="flex items-center gap-2 p-2 rounded-xl hover:bg-indigo-50 text-indigo-700 font-semibold transition-colors"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                <span>Dashboard Rekap Nilai</span>
+              </Link>
+            </>
           )}
 
           <button
