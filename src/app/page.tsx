@@ -1239,8 +1239,8 @@ export default function HomePage() {
                     src="/images/ai-helpdesk-robot.jpg"
                     alt="AI Customer Service Robot Assistant"
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-700 hover:scale-102"
-                    priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
 
