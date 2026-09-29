@@ -257,18 +257,6 @@ export default function HomePage() {
   const [activeSkillIndex, setActiveSkillIndex] = useState(0);
   const [activeWorkflowIndex, setActiveWorkflowIndex] = useState(0);
 
-  // Quick message state
-  const [contactName, setContactName] = useState("");
-  const [contactClass, setContactClass] = useState("XII TKJ 1");
-  const [contactMessage, setContactMessage] = useState("");
-
-  const handleSendWhatsApp = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!contactMessage.trim()) return;
-    const text = `Halo Pak Wahyu, perkenalkan saya ${contactName || "Siswa"} dari kelas ${contactClass}. Pesan: ${contactMessage}`;
-    const url = `https://wa.me/6282185903635?text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank");
-  };
 
   // Keahlian & Ruang Lingkup Materi Vokasi
   const skillsData = [
@@ -1233,89 +1221,61 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            {/* Left Column: Direct Quick Message Dispatcher */}
+            {/* Left Column: AI Customer Service Robot Console */}
             <div className="lg:col-span-5">
-              <div className="bg-white border border-slate-200 shadow-xs flex flex-col">
+              <div className="bg-white border border-slate-200 shadow-xs flex flex-col overflow-hidden">
                 {/* Console Bar */}
-                <div className="flex items-center justify-between px-4 py-2 bg-slate-900 text-white font-mono text-xs border-b border-slate-800">
+                <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 text-white font-mono text-xs border-b border-slate-800">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 bg-emerald-400"></span>
-                    <span className="font-bold tracking-wider">DISPATCHER://WHATSAPP-TICKET</span>
+                    <span className="font-bold tracking-wider">AI-ASSISTANT://HELPDESK-ROBOT</span>
                   </div>
-                  <span className="text-[10px] font-mono text-emerald-400 font-bold">DIRECT ROUTING</span>
+                  <span className="text-[10px] font-mono text-emerald-400 font-bold">24/7 ONLINE</span>
                 </div>
 
-                <form onSubmit={handleSendWhatsApp} className="p-5 sm:p-6 space-y-4">
+                {/* Robot Image Container */}
+                <div className="relative w-full aspect-[3/4] max-h-[460px] overflow-hidden bg-slate-950 border-b border-slate-200">
+                  <Image
+                    src="/images/ai-helpdesk-robot.jpg"
+                    alt="AI Customer Service Robot Assistant"
+                    fill
+                    className="object-cover transition-transform duration-700 hover:scale-102"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white font-mono text-xs">
+                    <span className="font-bold px-3 py-1 bg-sky-600 text-white border border-sky-500 shadow-xs text-[11px]">
+                      VOTECH AI BOT &bull; TKJ HELPDESK
+                    </span>
+                    <span className="text-emerald-300 hidden sm:inline text-[10px] font-bold">
+                      ACTIVE ASSIST
+                    </span>
+                  </div>
+                </div>
+
+                {/* Caption / Specification */}
+                <div className="p-4 sm:p-5 space-y-3 bg-white">
                   <div>
-                    <h3 className="font-extrabold text-base text-slate-900">
-                      Kirim Tiket Pertanyaan
+                    <h3 className="font-extrabold text-base text-slate-900 leading-snug">
+                      Asisten Virtual Helpdesk Siswa
                     </h3>
-                    <p className="text-xs text-slate-500 mt-1">
-                      Pesan akan terformat rapi dan otomatis dialihkan ke WhatsApp pribadi Pak Wahyu.
+                    <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                      Sistem cerdas pemandu praktikum kejuruan TKJ. Terintegrasi langsung dengan modul pembelajaran, simulator terminal, serta mengarahkan siswa ke saluran resmi pendidik.
                     </p>
                   </div>
 
-                  <div className="space-y-1.5">
-                    <label className="font-mono text-xs font-bold text-slate-700 flex items-center justify-between">
-                      <span>[01] NAMA SISWA *</span>
-                      <span className="text-[10px] text-slate-400 font-normal">Wajib diisi</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Masukkan nama lengkap Anda..."
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 border border-slate-200 text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
-                    />
+                  <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
+                    <div className="p-2 bg-slate-50 border border-slate-200 text-slate-700">
+                      <span className="text-slate-400 block text-[9px] uppercase">Routing</span>
+                      <span className="font-bold text-sky-700">6 Saluran Resmi</span>
+                    </div>
+                    <div className="p-2 bg-slate-50 border border-slate-200 text-slate-700">
+                      <span className="text-slate-400 block text-[9px] uppercase">Status</span>
+                      <span className="font-bold text-emerald-600">Siap Melayani</span>
+                    </div>
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="font-mono text-xs font-bold text-slate-700 flex items-center justify-between">
-                      <span>[02] KELAS TKJ *</span>
-                      <span className="text-[10px] text-slate-400 font-normal">Pilih rombel</span>
-                    </label>
-                    <select
-                      value={contactClass}
-                      onChange={(e) => setContactClass(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-slate-200 text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium cursor-pointer"
-                    >
-                      <option value="XII TKJ 1">XII TKJ 1</option>
-                      <option value="XII TKJ 2">XII TKJ 2</option>
-                      <option value="XI TKJ 1">XI TKJ 1</option>
-                      <option value="XI TKJ 2">XI TKJ 2</option>
-                      <option value="X TJKT">X TJKT</option>
-                    </select>
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <label className="font-mono text-xs font-bold text-slate-700 flex items-center justify-between">
-                      <span>[03] PERTANYAAN / KENDALA LAB *</span>
-                      <span className="text-[10px] text-slate-400 font-normal">Deskripsi kendala</span>
-                    </label>
-                    <textarea
-                      rows={4}
-                      required
-                      placeholder="Contoh: Pak, saya mengalami kendala pada langkah partisi LVM di modul Pertemuan 2..."
-                      value={contactMessage}
-                      onChange={(e) => setContactMessage(e.target.value)}
-                      className="w-full px-3.5 py-2.5 border border-slate-200 text-xs focus:ring-1 focus:ring-sky-500 focus:border-sky-500 focus:outline-none bg-slate-50 focus:bg-white font-medium"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center justify-center gap-2 border border-emerald-600"
-                  >
-                    <Send className="h-4 w-4" />
-                    <span>Kirim Pesan ke WhatsApp Pak Wahyu</span>
-                  </button>
-
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-between font-mono text-[10px] text-slate-400">
-                    <span>STATUS: GATEWAY READY</span>
-                    <span>ENCRYPTION: 256-BIT SSL</span>
-                  </div>
-                </form>
+                </div>
               </div>
             </div>
 
