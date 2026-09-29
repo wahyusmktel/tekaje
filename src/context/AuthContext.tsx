@@ -401,8 +401,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isAuthReady,
-        isLoginModalOpen,
-        openLoginModal: () => setIsLoginModalOpen(true),
+        isLoginModalOpen: false,
+        openLoginModal: () => {
+          if (typeof window !== "undefined") {
+            window.location.href = "/login";
+          }
+        },
         closeLoginModal: () => setIsLoginModalOpen(false),
         loginAsStudent,
         loginWithCredentials,
