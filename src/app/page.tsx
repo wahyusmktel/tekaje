@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import UserNavPill from "@/components/UserNavPill";
+import { useAuth } from "@/context/AuthContext";
 import {
   GraduationCap,
   BookOpen,
@@ -27,7 +28,6 @@ import {
   Briefcase,
   UserCheck,
   Send,
-  Sliders,
   Menu,
   X,
   Smartphone,
@@ -39,6 +39,7 @@ import {
   Share2,
 } from "lucide-react";
 
+// Custom SVG Icons for Brands
 function GithubIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
@@ -75,7 +76,183 @@ function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+// Authentic 3D LEGO Style "TEKAJE" Banner Component
+function LegoTekajeBanner() {
+  return (
+    <div className="w-full max-w-5xl mx-auto py-8 select-none flex justify-center">
+      <svg
+        viewBox="0 0 1000 220"
+        className="w-full h-auto drop-shadow-[0_15px_25px_rgba(0,0,0,0.35)]"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          {/* Lego Stud Gradient */}
+          <linearGradient id="studRed" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ff4d4d" />
+            <stop offset="50%" stopColor="#d91b1b" />
+            <stop offset="100%" stopColor="#9e0c0c" />
+          </linearGradient>
+          <linearGradient id="studBlue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#4da6ff" />
+            <stop offset="50%" stopColor="#0066cc" />
+            <stop offset="100%" stopColor="#004080" />
+          </linearGradient>
+          <linearGradient id="studYellow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#fff066" />
+            <stop offset="50%" stopColor="#f5cd14" />
+            <stop offset="100%" stopColor="#b39200" />
+          </linearGradient>
+          <linearGradient id="studGreen" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#5cd65c" />
+            <stop offset="50%" stopColor="#28a745" />
+            <stop offset="100%" stopColor="#19692c" />
+          </linearGradient>
+          <linearGradient id="studOrange" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffaa44" />
+            <stop offset="50%" stopColor="#f37021" />
+            <stop offset="100%" stopColor="#b84700" />
+          </linearGradient>
+
+          {/* Lego Brick Filter for 3D extrusion */}
+          <filter id="legoShadow" x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="3" dy="6" stdDeviation="3" floodOpacity="0.3" />
+          </filter>
+        </defs>
+
+        {/* --- LETTER T (RED) --- */}
+        <g transform="translate(30, 20)" filter="url(#legoShadow)">
+          {/* Horizontal Top Bar (120 x 44) */}
+          <rect x="0" y="0" width="130" height="44" rx="6" fill="#d91b1b" stroke="#ff6b6b" strokeWidth="2" />
+          <circle cx="20" cy="18" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="50" cy="18" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="80" cy="18" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="110" cy="18" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+
+          {/* Vertical Stem (46 x 130) */}
+          <rect x="42" y="44" width="46" height="130" rx="6" fill="#b81414" stroke="#ff4d4d" strokeWidth="1.5" />
+          <circle cx="65" cy="70" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="65" cy="105" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="65" cy="140" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+        </g>
+
+        {/* --- LETTER E (YELLOW) --- */}
+        <g transform="translate(190, 20)" filter="url(#legoShadow)">
+          {/* Vertical Spine */}
+          <rect x="0" y="0" width="44" height="174" rx="6" fill="#d4ad00" stroke="#fff066" strokeWidth="1.5" />
+          <circle cx="22" cy="22" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="22" cy="62" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="22" cy="102" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="22" cy="142" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+
+          {/* Top Arm */}
+          <rect x="44" y="0" width="80" height="42" rx="5" fill="#f5cd14" stroke="#fff066" strokeWidth="1.5" />
+          <circle cx="70" cy="18" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="104" cy="18" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+
+          {/* Middle Arm */}
+          <rect x="44" y="68" width="68" height="38" rx="5" fill="#f5cd14" stroke="#fff066" strokeWidth="1.5" />
+          <circle cx="70" cy="84" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="98" cy="84" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+
+          {/* Bottom Arm */}
+          <rect x="44" y="132" width="80" height="42" rx="5" fill="#f5cd14" stroke="#fff066" strokeWidth="1.5" />
+          <circle cx="70" cy="150" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+          <circle cx="104" cy="150" r="10" fill="url(#studYellow)" stroke="#ffffff" strokeWidth="1.5" />
+        </g>
+
+        {/* --- LETTER K (BLUE) --- */}
+        <g transform="translate(345, 20)" filter="url(#legoShadow)">
+          {/* Vertical Spine */}
+          <rect x="0" y="0" width="44" height="174" rx="6" fill="#0052a3" stroke="#4da6ff" strokeWidth="1.5" />
+          <circle cx="22" cy="22" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+          <circle cx="22" cy="62" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+          <circle cx="22" cy="102" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+          <circle cx="22" cy="142" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+
+          {/* Diagonal Upper Arm */}
+          <polygon points="44,80 115,10 135,26 65,96" fill="#0066cc" stroke="#4da6ff" strokeWidth="1.5" />
+          <circle cx="80" cy="46" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+          <circle cx="115" cy="25" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+
+          {/* Diagonal Lower Arm */}
+          <polygon points="54,84 125,160 105,174 38,102" fill="#0066cc" stroke="#4da6ff" strokeWidth="1.5" />
+          <circle cx="82" cy="125" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+          <circle cx="110" cy="155" r="10" fill="url(#studBlue)" stroke="#80bfff" strokeWidth="1.5" />
+        </g>
+
+        {/* --- LETTER A (GREEN) --- */}
+        <g transform="translate(515, 20)" filter="url(#legoShadow)">
+          {/* Left Leg */}
+          <polygon points="50,0 74,0 26,174 0,174" fill="#218838" stroke="#5cd65c" strokeWidth="1.5" />
+          <circle cx="48" cy="40" r="10" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+          <circle cx="32" cy="95" r="10" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+          <circle cx="16" cy="150" r="10" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+
+          {/* Right Leg */}
+          <polygon points="50,0 74,0 124,174 98,174" fill="#28a745" stroke="#5cd65c" strokeWidth="1.5" />
+          <circle cx="76" cy="40" r="10" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+          <circle cx="92" cy="95" r="10" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+          <circle cx="108" cy="150" r="10" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+
+          {/* Top Stud */}
+          <circle cx="62" cy="10" r="9" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+
+          {/* Horizontal Crossbar */}
+          <rect x="28" y="96" width="68" height="34" rx="4" fill="#1e7e34" stroke="#5cd65c" strokeWidth="1.5" />
+          <circle cx="48" cy="110" r="9" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+          <circle cx="76" cy="110" r="9" fill="url(#studGreen)" stroke="#85e085" strokeWidth="1.5" />
+        </g>
+
+        {/* --- LETTER J (ORANGE) --- */}
+        <g transform="translate(680, 20)" filter="url(#legoShadow)">
+          {/* Top Bar */}
+          <rect x="25" y="0" width="95" height="42" rx="5" fill="#f37021" stroke="#ffaa44" strokeWidth="1.5" />
+          <circle cx="45" cy="18" r="10" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+          <circle cx="75" cy="18" r="10" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+          <circle cx="105" cy="18" r="10" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+
+          {/* Vertical Stem */}
+          <rect x="76" y="42" width="44" height="98" rx="5" fill="#d95e14" stroke="#ffaa44" strokeWidth="1.5" />
+          <circle cx="98" cy="65" r="10" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+          <circle cx="98" cy="105" r="10" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+
+          {/* Bottom Hook Curve */}
+          <path d="M120,135 C120,174 90,174 70,174 C35,174 15,160 15,135 L48,135 C48,148 58,150 70,150 C80,150 88,148 88,135 Z" fill="#b84700" stroke="#ffaa44" strokeWidth="1.5" />
+          <circle cx="70" cy="155" r="9" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+          <circle cx="35" cy="142" r="9" fill="url(#studOrange)" stroke="#ffd480" strokeWidth="1.5" />
+        </g>
+
+        {/* --- LETTER E (RED) --- */}
+        <g transform="translate(835, 20)" filter="url(#legoShadow)">
+          {/* Vertical Spine */}
+          <rect x="0" y="0" width="44" height="174" rx="6" fill="#b81414" stroke="#ff4d4d" strokeWidth="1.5" />
+          <circle cx="22" cy="22" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="22" cy="62" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="22" cy="102" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="22" cy="142" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+
+          {/* Top Arm */}
+          <rect x="44" y="0" width="80" height="42" rx="5" fill="#d91b1b" stroke="#ff6b6b" strokeWidth="1.5" />
+          <circle cx="70" cy="18" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="104" cy="18" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+
+          {/* Middle Arm */}
+          <rect x="44" y="68" width="68" height="38" rx="5" fill="#d91b1b" stroke="#ff6b6b" strokeWidth="1.5" />
+          <circle cx="70" cy="84" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="98" cy="84" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+
+          {/* Bottom Arm */}
+          <rect x="44" y="132" width="80" height="42" rx="5" fill="#d91b1b" stroke="#ff6b6b" strokeWidth="1.5" />
+          <circle cx="70" cy="150" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+          <circle cx="104" cy="150" r="10" fill="url(#studRed)" stroke="#ff8080" strokeWidth="1.5" />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
 export default function HomePage() {
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSkillIndex, setActiveSkillIndex] = useState(0);
   const [activeWorkflowIndex, setActiveWorkflowIndex] = useState(0);
@@ -101,8 +278,6 @@ export default function HomePage() {
       category: "Infrastruktur Cloud",
       image: "/images/cloud-datacenter.jpg",
       icon: Cloud,
-      color: "from-sky-500 to-blue-600",
-      accent: "text-sky-600 bg-sky-50 border-sky-200",
       description:
         "Penguasaan teknologi virtualisasi server industri, hypervisor type-1 dan type-2 (KVM, Proxmox VE, VirtualBox), manajemen instance cloud IaaS, serta alokasi resource vCPU, vRAM, dan virtual storage secara efisien.",
       competencies: [
@@ -120,8 +295,6 @@ export default function HomePage() {
       category: "Sistem Operasi Server",
       image: "/images/linux-sysadmin.jpg",
       icon: Server,
-      color: "from-amber-500 to-orange-600",
-      accent: "text-amber-600 bg-amber-50 border-amber-200",
       description:
         "Konfigurasi dan pemeliharaan layanan server mandiri berbasis distro Debian dan Ubuntu Server: DNS Server (BIND9), Web Server (Nginx & Apache), Database Server (MariaDB), serta otomasi script Bash CLI.",
       competencies: [
@@ -139,8 +312,6 @@ export default function HomePage() {
       category: "Routing & Switching Enterprise",
       image: "/images/network-routing.jpg",
       icon: Network,
-      color: "from-emerald-500 to-teal-600",
-      accent: "text-emerald-600 bg-emerald-50 border-emerald-200",
       description:
         "Perancangan topologi jaringan skala enterprise menggunakan RouterBOARD MikroTik dan switch manageable: implementasi routing dinamis OSPF dan BGP, VLAN Trunking 802.1Q, Firewall Filter, dan Quality of Service (QoS).",
       competencies: [
@@ -158,8 +329,6 @@ export default function HomePage() {
       category: "Defensive Security",
       image: "/images/cyber-security.jpg",
       icon: ShieldCheck,
-      color: "from-purple-500 to-indigo-600",
-      accent: "text-purple-600 bg-purple-50 border-purple-200",
       description:
         "Penerapan standar keamanan sistem jaringan vokasi: hardening akses remote SSH menggunakan Public Key Encryption, proteksi port scanning, audit integritas server, dan implementasi tunnel VPN WireGuard terenkripsi.",
       competencies: [
@@ -178,14 +347,14 @@ export default function HomePage() {
     {
       step: 1,
       title: "Pembelajaran Terarah & Berbasis Tantangan (Guided Stepper)",
-      subtitle: "Setiap langkah dirancang urut agar siswa tidak bingung",
+      subtitle: "Setiap langkah dirancang urut agar siswa terpandu",
       image: "/images/stepper-roadmap.jpg",
       icon: Layers,
       description:
-        "Siswa mengikuti roadmap pembelajaran langkah demi langkah mulai dari Pre-Test diagnostik, pendalaman materi teori, praktikum laboratorium, unggah portofolio tugas, hingga Post-Test evaluasi. Tahap berikutnya hanya terbuka setelah tantangan terselesaikan.",
+        "Siswa mengikuti alur pembelajaran langkah demi langkah mulai dari Pre-Test diagnostik, pendalaman materi teori, praktikum laboratorium, unggah portofolio tugas, hingga Post-Test evaluasi. Tahap berikutnya terbuka otomatis setelah siswa menyelesaikan tantangan.",
       points: [
         "Gembok otomatis untuk memastikan siswa mengikuti alur berurutan",
-        "Soal interaktif langsung dikoreksi otomatis dengan skor instan",
+        "Soal pre-test & post-test interaktif dengan kalkulasi skor otomatis",
         "Checklist checkpoint portofolio praktikum mandiri",
       ],
     },
@@ -198,7 +367,7 @@ export default function HomePage() {
       description:
         "Siswa tidak perlu repot melakukan instalasi software berat di laptop masing-masing. Website ini menyediakan terminal simulator interaktif dengan fitur salin perintah 1-klik, respons feedback otomatis, dan output real-time menyerupai server Ubuntu asli.",
       points: [
-        "Tombol salin 1-klik untuk semua baris perintah Ubuntu",
+        "Tombol salin 1-klik untuk seluruh baris perintah Ubuntu",
         "Simulator CLI interaktif dengan umpan balik perintah langsung",
         "Dapat digunakan di laptop spek standar laboratorium sekolah",
       ],
@@ -210,7 +379,7 @@ export default function HomePage() {
       image: "/images/mobile-learning.jpg",
       icon: Smartphone,
       description:
-        "Memahami kendala bahwa tidak semua siswa memiliki laptop di rumah, seluruh tampilan website, modul teori, materi bacaan, dan quiz interaktif dirancang responsif serta ramah pengguna layar smartphone.",
+        "Memahami kendala bahwa tidak semua siswa memiliki laptop di rumah, seluruh tampilan website, modul teori, materi bacaan, dan quiz interaktif dirancang responsif serta sangat nyaman diakses dari layar smartphone.",
       points: [
         "Tata letak luas (full-page) yang nyaman dibaca di smartphone & PC",
         "Akses materi dan persiapan pre-test dari mana saja",
@@ -240,7 +409,7 @@ export default function HomePage() {
       title: "Administrasi Cloud Computing & Virtualisasi",
       subtitle: "Mata Pelajaran Produktif TKJ",
       status: "Tersedia & Aktif",
-      statusColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
+      statusColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
       description:
         "Mempelajari arsitektur virtualisasi server, Type-2 Hypervisor menggunakan Oracle VM VirtualBox, instalasi Ubuntu Server 22.04 LTS, dan konfigurasi jaringan NAT/Bridged.",
       href: "/kelas/cloud-computing",
@@ -252,14 +421,13 @@ export default function HomePage() {
         "Alokasi 4 JP (180 Menit) Praktikum Mandiri",
       ],
       icon: Cloud,
-      badge: "Kelas Unggulan",
     },
     {
       id: "asj",
       title: "Administrasi Sistem Jaringan (ASJ - Linux Server)",
       subtitle: "Mata Pelajaran Produktif TKJ",
       status: "Segera Rilis",
-      statusColor: "bg-amber-100 text-amber-800 border-amber-200",
+      statusColor: "bg-amber-50 text-amber-700 border-amber-200",
       description:
         "Konfigurasi layanan server mandiri berbasis Debian/Ubuntu: DNS Server (BIND9), Web Server (Nginx & Apache), Database Server (MariaDB), dan Mail Server.",
       href: "#",
@@ -270,14 +438,13 @@ export default function HomePage() {
         "Praktikum Berbasis Command Line Interface (CLI)",
       ],
       icon: Server,
-      badge: "Semester Genap",
     },
     {
       id: "aij",
       title: "Administrasi Infrastruktur Jaringan (AIJ)",
       subtitle: "Mata Pelajaran Produktif TKJ",
       status: "Segera Rilis",
-      statusColor: "bg-sky-100 text-sky-800 border-sky-200",
+      statusColor: "bg-sky-50 text-sky-700 border-sky-200",
       description:
         "Perancangan topologi jaringan skala enterprise: Routing Dinamis (OSPF & BGP), VLAN Trunking, Firewall Filter Rule, dan Manajemen Bandwidth pada Router MikroTik & Cisco.",
       href: "#",
@@ -288,14 +455,13 @@ export default function HomePage() {
         "Manajemen Keamanan Jaringan Lab",
       ],
       icon: Network,
-      badge: "Semester Ganjil",
     },
     {
       id: "cyber-security",
       title: "Dasar Keamanan Jaringan & Cyber Security",
       subtitle: "Mata Pelajaran Produktif TKJ",
       status: "Segera Rilis",
-      statusColor: "bg-purple-100 text-purple-800 border-purple-200",
+      statusColor: "bg-purple-50 text-purple-700 border-purple-200",
       description:
         "Konsep perlindungan infrastruktur jaringan: Port Scanning, SSH Hardening dengan Public Key, Firewall Policy IPTables/UFW, dan Implementasi VPN Wireguard.",
       href: "#",
@@ -306,7 +472,6 @@ export default function HomePage() {
         "Simulasi Pertahanan Jaringan Server",
       ],
       icon: ShieldCheck,
-      badge: "Kelas Pilihan",
     },
   ];
 
@@ -361,12 +526,16 @@ export default function HomePage() {
             <a href="#konsultasi" className="hover:text-sky-600 transition-colors">
               Konsultasi
             </a>
-            <Link
-              href="/manajemen-guru"
-              className="text-xs font-bold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/80 transition-colors"
-            >
-              Kelola Siswa
-            </Link>
+
+            {/* HANYA MUNCUL JIKA GURU SUDAH LOGIN */}
+            {user.isLoggedIn && user.role === "guru" && (
+              <Link
+                href="/manajemen-guru"
+                className="text-xs font-bold px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-200/80 transition-colors"
+              >
+                Kelola Siswa
+              </Link>
+            )}
           </nav>
 
           {/* Right Action Buttons */}
@@ -423,7 +592,7 @@ export default function HomePage() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-3 rounded-xl hover:bg-white/10 transition-colors"
                 >
-                  Keahlian &amp; Ruang Lingkup Materi
+                  Keahlian Vokasi TKJ
                 </a>
                 <a
                   href="#alur-belajar"
@@ -446,13 +615,17 @@ export default function HomePage() {
                 >
                   Konsultasi &amp; Bantuan
                 </a>
-                <Link
-                  href="/manajemen-guru"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="p-3 rounded-xl bg-indigo-600/30 text-indigo-300 border border-indigo-500/40"
-                >
-                  Portal Manajemen Guru
-                </Link>
+
+                {/* HANYA MUNCUL DI MOBILE JIKA GURU SUDAH LOGIN */}
+                {user.isLoggedIn && user.role === "guru" && (
+                  <Link
+                    href="/manajemen-guru"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-3 rounded-xl bg-indigo-600/30 text-indigo-300 border border-indigo-500/40"
+                  >
+                    Portal Manajemen Guru
+                  </Link>
+                )}
               </div>
             </div>
 
@@ -464,41 +637,25 @@ export default function HomePage() {
       </header>
 
       {/* ========================================================================= */}
-      {/* 2. HERO SECTION: MASKOT TEKAJE (KIRI) + TENTANG SINGKAT & CTA (KANAN) */}
+      {/* 2. HERO SECTION: MASKOT TANPA KOTAK PUTIH (BESAR & MENYATU) + BIODATA */}
       {/* ========================================================================= */}
       <section id="profil" className="relative overflow-hidden bg-gradient-to-b from-white via-slate-50 to-slate-100 py-12 md:py-20 border-b border-slate-200">
         <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-            {/* HERO KIRI: GAMBAR MASKOT TEKAJE */}
-            <div className="lg:col-span-5 flex justify-center order-2 lg:order-1">
-              <div className="relative w-full max-w-md sm:max-w-lg">
-                {/* Background Ambient Glow */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-sky-400/20 via-indigo-500/20 to-teal-400/20 rounded-3xl blur-3xl transform -rotate-2" />
+            {/* HERO KIRI: MASKOT BESAR & MENYATU TANPA BINGKAI KOTAK PUTIH */}
+            <div className="lg:col-span-5 flex justify-center items-center relative order-2 lg:order-1">
+              {/* Ambient radial soft glow menyatu alami dengan halaman */}
+              <div className="absolute w-[340px] h-[340px] sm:w-[480px] sm:h-[480px] bg-gradient-to-tr from-sky-200/50 via-indigo-150/30 to-teal-100/40 rounded-full blur-3xl pointer-events-none -z-10" />
 
-                {/* Mascot Frame */}
-                <div className="relative bg-white/90 backdrop-blur-md rounded-3xl border border-slate-200/90 shadow-2xl p-6 sm:p-8 overflow-hidden group">
-                  <div className="relative w-full aspect-square max-h-[460px] mx-auto flex items-center justify-center">
-                    <Image
-                      src="/maskot-tekaje.png"
-                      alt="Maskot TEKAJE SMK Telkom Lampung"
-                      width={440}
-                      height={440}
-                      className="object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
-                      priority
-                    />
-                  </div>
-
-                  {/* Mascot Badge Overlay */}
-                  <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="font-extrabold text-slate-800">Maskot Resmi TKJ</span>
-                    </div>
-                    <span className="font-semibold text-slate-500">
-                      SMK Telkom Lampung
-                    </span>
-                  </div>
-                </div>
+              <div className="relative w-full max-w-[460px] sm:max-w-[520px] aspect-square flex items-center justify-center">
+                <Image
+                  src="/maskot-tekaje.png"
+                  alt="Maskot TEKAJE SMK Telkom Lampung"
+                  width={520}
+                  height={520}
+                  className="w-full h-auto object-contain drop-shadow-[0_20px_35px_rgba(15,23,42,0.14)] transition-transform duration-500 hover:scale-105"
+                  priority
+                />
               </div>
             </div>
 
@@ -573,15 +730,12 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 3. KEAHLIAN & RUANG LINGKUP MATERI VOKASI: VERTICAL SLIDER INTERAKTIF */}
+      {/* 3. KEAHLIAN & RUANG LINGKUP MATERI VOKASI: VERTICAL SLIDER SOFT & TERATUR */}
       {/* ========================================================================= */}
       <section id="keahlian" className="py-16 md:py-24 bg-white border-b border-slate-200">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
-          {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-full border border-sky-200">
-              Kompetensi Kejuruan TKJ
-            </span>
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
+          {/* Section Header (Clean tanpa badge box) */}
+          <div className="text-center max-w-3xl mx-auto space-y-2">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               Keahlian &amp; Ruang Lingkup Materi Vokasi
             </h2>
@@ -590,9 +744,9 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Vertical Slider Component */}
+          {/* Vertical Slider Component (Light & Clean Theme) */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left Column: Vertical Selector Navigation */}
+            {/* Left Column: Clean Vertical Navigation List */}
             <div className="lg:col-span-5 flex flex-col justify-between gap-3">
               {skillsData.map((item, index) => {
                 const IconComponent = item.icon;
@@ -603,20 +757,20 @@ export default function HomePage() {
                     onClick={() => setActiveSkillIndex(index)}
                     className={`text-left p-5 rounded-3xl border transition-all cursor-pointer relative overflow-hidden ${
                       isSelected
-                        ? "bg-slate-900 text-white border-slate-900 shadow-xl scale-[1.02]"
-                        : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-800"
+                        ? "bg-sky-50/80 border-sky-300 shadow-md scale-[1.01]"
+                        : "bg-white hover:bg-slate-50 border-slate-200 text-slate-700"
                     }`}
                   >
                     {isSelected && (
-                      <div className="absolute top-0 left-0 bottom-0 w-2 bg-sky-500" />
+                      <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-sky-600" />
                     )}
 
                     <div className="flex items-center gap-3.5">
                       <div
                         className={`h-11 w-11 rounded-2xl flex items-center justify-center shrink-0 ${
                           isSelected
-                            ? "bg-sky-500 text-white shadow-md shadow-sky-500/30"
-                            : "bg-white text-slate-700 border border-slate-200"
+                            ? "bg-sky-600 text-white shadow-sm shadow-sky-600/30"
+                            : "bg-slate-100 text-slate-600"
                         }`}
                       >
                         <IconComponent className="h-5 w-5" />
@@ -625,19 +779,23 @@ export default function HomePage() {
                       <div className="flex-1 min-w-0">
                         <div
                           className={`text-[10px] font-bold uppercase tracking-wider ${
-                            isSelected ? "text-sky-400" : "text-slate-400"
+                            isSelected ? "text-sky-700" : "text-slate-400"
                           }`}
                         >
                           {item.category}
                         </div>
-                        <h3 className="font-bold text-sm sm:text-base leading-snug truncate">
+                        <h3
+                          className={`font-bold text-sm sm:text-base leading-snug truncate ${
+                            isSelected ? "text-slate-900" : "text-slate-700"
+                          }`}
+                        >
                           {item.title}
                         </h3>
                       </div>
 
                       <ChevronRight
                         className={`h-5 w-5 shrink-0 transition-transform ${
-                          isSelected ? "text-sky-400 translate-x-1" : "text-slate-400"
+                          isSelected ? "text-sky-600 translate-x-1" : "text-slate-300"
                         }`}
                       />
                     </div>
@@ -646,14 +804,14 @@ export default function HomePage() {
               })}
             </div>
 
-            {/* Right Column: Active Showcase Panel with Generated AI Image */}
+            {/* Right Column: Active Showcase Panel (Clean White Card) */}
             <div className="lg:col-span-7">
               {(() => {
                 const current = skillsData[activeSkillIndex];
                 return (
-                  <div className="bg-slate-900 text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col h-full animate-fade-in">
-                    {/* Showcase Image Header */}
-                    <div className="relative w-full aspect-[16/9] max-h-[360px] overflow-hidden">
+                  <div className="bg-white rounded-3xl border border-slate-200 shadow-lg overflow-hidden flex flex-col h-full animate-fade-in">
+                    {/* Image Header with clean border */}
+                    <div className="relative w-full aspect-[16/9] max-h-[360px] overflow-hidden bg-slate-100">
                       <Image
                         src={current.image}
                         alt={current.title}
@@ -661,22 +819,22 @@ export default function HomePage() {
                         className="object-cover transition-transform duration-700 hover:scale-105"
                         priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
 
                       <div className="absolute top-4 left-4">
-                        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-sky-400 border border-slate-700">
+                        <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-sky-800 shadow-sm border border-slate-200">
                           {current.category}
                         </span>
                       </div>
                     </div>
 
-                    {/* Showcase Content */}
+                    {/* Content Section */}
                     <div className="p-6 sm:p-8 space-y-6 flex-1 flex flex-col justify-between">
-                      <div className="space-y-3">
-                        <h3 className="text-xl sm:text-2xl font-black text-white">
+                      <div className="space-y-2">
+                        <h3 className="text-xl sm:text-2xl font-black text-slate-900">
                           {current.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                           {current.description}
                         </p>
                       </div>
@@ -690,9 +848,9 @@ export default function HomePage() {
                           {current.competencies.map((comp, idx) => (
                             <div
                               key={idx}
-                              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs text-slate-200"
+                              className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700"
                             >
-                              <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                               <span className="truncate">{comp}</span>
                             </div>
                           ))}
@@ -700,7 +858,7 @@ export default function HomePage() {
                       </div>
 
                       {/* Action CTA */}
-                      <div className="pt-4 border-t border-slate-800 flex items-center justify-between">
+                      <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                         <span className="text-xs text-slate-400">
                           SMK Telkom Lampung &bull; Lab Praktikum TKJ
                         </span>
@@ -722,29 +880,23 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 4. BAGAIMANA SISTEM INI MEMBANTU SISWA: VERTICAL SLIDER TRANSPARAN */}
+      {/* 4. BAGAIMANA SISTEM INI MEMBANTU SISWA: VERTICAL SLIDER BERSIH & TERANG */}
       {/* ========================================================================= */}
-      <section id="alur-belajar" className="py-16 md:py-24 bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 text-white relative overflow-hidden">
-        {/* Subtle Tech Pattern & Glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-sky-600/10 blur-[140px] pointer-events-none rounded-full" />
-
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 relative space-y-12">
-          {/* Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-400 bg-sky-950/80 px-3.5 py-1 rounded-full border border-sky-800">
-              Metode Belajar Modern
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+      <section id="alur-belajar" className="py-16 md:py-24 bg-slate-50/80 border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
+          {/* Header (Clean tanpa badge box) */}
+          <div className="text-center max-w-3xl mx-auto space-y-2">
+            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
               Bagaimana Sistem Pembelajaran Ini Membantu Siswa?
             </h2>
-            <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-              Dirancang untuk mengatasi kendala belajar teknis di sekolah kejuruan, memastikan setiap siswa terpandu dari nol hingga kompeten.
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Dirancang untuk mengatasi kendala belajar teknis di sekolah kejuruan, memastikan setiap siswa terpandu dari awal hingga teruji kompeten.
             </p>
           </div>
 
-          {/* Transparent Vertical Slider Container */}
+          {/* Clean Light-Mode Vertical Slider Container */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left Nav: Vertical Step Buttons with Transparent Glassmorphism */}
+            {/* Left Nav: Vertical Step Buttons with Clean Border & Active State */}
             <div className="lg:col-span-5 flex flex-col justify-between gap-3">
               {workflowData.map((item, idx) => {
                 const IconComp = item.icon;
@@ -753,35 +905,39 @@ export default function HomePage() {
                   <button
                     key={item.step}
                     onClick={() => setActiveWorkflowIndex(idx)}
-                    className={`text-left p-5 rounded-3xl border transition-all cursor-pointer backdrop-blur-md relative ${
+                    className={`text-left p-5 rounded-3xl border transition-all cursor-pointer relative ${
                       isSelected
-                        ? "bg-white/15 border-sky-400 text-white shadow-xl shadow-sky-500/10 scale-[1.02]"
-                        : "bg-white/5 hover:bg-white/10 border-white/10 text-slate-300"
+                        ? "bg-white border-sky-400 text-slate-900 shadow-md scale-[1.01]"
+                        : "bg-white/60 hover:bg-white border-slate-200 text-slate-600"
                     }`}
                   >
+                    {isSelected && (
+                      <div className="absolute top-0 left-0 bottom-0 w-1.5 bg-sky-600 rounded-l" />
+                    )}
+
                     <div className="flex items-start gap-4">
                       <div
                         className={`h-10 w-10 rounded-2xl flex items-center justify-center font-bold text-sm shrink-0 ${
                           isSelected
-                            ? "bg-sky-500 text-white shadow-md shadow-sky-500/30"
-                            : "bg-white/10 text-slate-300"
+                            ? "bg-sky-600 text-white shadow-sm shadow-sky-600/30"
+                            : "bg-slate-100 text-slate-500"
                         }`}
                       >
                         {item.step}
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-bold text-sm sm:text-base text-white leading-snug">
+                        <h4 className="font-bold text-sm sm:text-base text-slate-900 leading-snug">
                           {item.title}
                         </h4>
-                        <p className="text-xs text-slate-400 mt-1 line-clamp-1">
+                        <p className="text-xs text-slate-500 mt-1 line-clamp-1">
                           {item.subtitle}
                         </p>
                       </div>
 
                       <ChevronRight
                         className={`h-4 w-4 shrink-0 transition-transform ${
-                          isSelected ? "text-sky-400 translate-x-1" : "text-slate-500"
+                          isSelected ? "text-sky-600 translate-x-1" : "text-slate-300"
                         }`}
                       />
                     </div>
@@ -790,14 +946,14 @@ export default function HomePage() {
               })}
             </div>
 
-            {/* Right Display: Active Transparent Showcase with Image */}
+            {/* Right Display: Active Showcase Card */}
             <div className="lg:col-span-7">
               {(() => {
                 const curr = workflowData[activeWorkflowIndex];
                 return (
-                  <div className="bg-white/5 backdrop-blur-xl border border-white/15 rounded-3xl p-6 sm:p-8 flex flex-col justify-between h-full space-y-6 shadow-2xl animate-fade-in">
-                    {/* Active Image with Glass Border */}
-                    <div className="relative w-full aspect-[16/9] max-h-[340px] rounded-2xl overflow-hidden border border-white/10">
+                  <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 flex flex-col justify-between h-full space-y-6 shadow-md animate-fade-in">
+                    {/* Active Image */}
+                    <div className="relative w-full aspect-[16/9] max-h-[340px] rounded-2xl overflow-hidden border border-slate-200">
                       <Image
                         src={curr.image}
                         alt={curr.title}
@@ -805,31 +961,31 @@ export default function HomePage() {
                         className="object-cover"
                         priority
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
 
-                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-500 text-white shadow-sm">
+                      <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+                        <span className="text-xs font-bold px-3 py-1 rounded-full bg-sky-600 text-white shadow-sm">
                           Langkah {curr.step} dari 4
                         </span>
-                        <span className="text-xs text-slate-300 hidden sm:inline">
-                          Platform Pembelajaran Interaktif
+                        <span className="text-xs text-slate-100 hidden sm:inline drop-shadow">
+                          Platform Praktikum Mandiri
                         </span>
                       </div>
                     </div>
 
-                    {/* Step Description & Key Advantages */}
+                    {/* Step Description & Key Points */}
                     <div className="space-y-4">
-                      <h3 className="text-xl sm:text-2xl font-extrabold text-white">
+                      <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900">
                         {curr.title}
                       </h3>
-                      <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                         {curr.description}
                       </p>
 
                       <div className="space-y-2 pt-2">
                         {curr.points.map((pt, i) => (
-                          <div key={i} className="flex items-center gap-2.5 text-xs text-slate-200">
-                            <CheckCircle2 className="h-4 w-4 text-sky-400 shrink-0" />
+                          <div key={i} className="flex items-center gap-2.5 text-xs text-slate-700">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                             <span>{pt}</span>
                           </div>
                         ))}
@@ -846,12 +1002,9 @@ export default function HomePage() {
       {/* ========================================================================= */}
       {/* 5. DAFTAR KELAS PEMBELAJARAN */}
       {/* ========================================================================= */}
-      <section id="daftar-kelas" className="py-16 md:py-24 bg-slate-100 border-b border-slate-200">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-white px-3.5 py-1 rounded-full border border-slate-200">
-              Katalog Pembelajaran
-            </span>
+      <section id="daftar-kelas" className="py-16 md:py-24 bg-white border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
+          <div className="text-center max-w-3xl mx-auto space-y-2">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               Daftar Kelas yang Diampu
             </h2>
@@ -869,7 +1022,7 @@ export default function HomePage() {
                   className={`p-7 rounded-3xl border transition-all flex flex-col justify-between ${
                     c.active
                       ? "bg-white border-sky-300 shadow-md hover:border-sky-400 hover:shadow-xl"
-                      : "bg-white/70 border-slate-200 opacity-80"
+                      : "bg-slate-50/70 border-slate-200 opacity-80"
                   }`}
                 >
                   <div className="space-y-4">
@@ -929,15 +1082,12 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 6. KONSULTASI & BANTUAN BELAJAR: 6 SALURAN RESMI + FORMULIR PESAN */}
+      {/* 6. KONSULTASI & BANTUAN BELAJAR: 6 SALURAN RESMI + QUICK FORM */}
       {/* ========================================================================= */}
-      <section id="konsultasi" className="py-16 md:py-24 bg-white border-b border-slate-200">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
-          {/* Header */}
-          <div className="text-center max-w-3xl mx-auto space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 bg-sky-50 px-3.5 py-1 rounded-full border border-sky-200">
-              Layanan Pendidik
-            </span>
+      <section id="konsultasi" className="py-16 md:py-24 bg-slate-50/70 border-b border-slate-200">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
+          {/* Header (Clean tanpa badge box) */}
+          <div className="text-center max-w-3xl mx-auto space-y-2">
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
               Konsultasi &amp; Bantuan Belajar Siswa
             </h2>
@@ -949,7 +1099,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Left Column: 6 Official Contact Channels */}
             <div className="lg:col-span-7 space-y-4">
-              <div className="p-6 rounded-3xl bg-slate-50 border border-slate-200 space-y-4">
+              <div className="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-extrabold text-base text-slate-900">
                   Saluran Komunikasi Resmi:
                 </h3>
@@ -958,9 +1108,9 @@ export default function HomePage() {
                   {/* 1. Email */}
                   <a
                     href="mailto:wahyu@smktelkom-lpg.sch.id"
-                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-sky-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-sky-50/60 border border-slate-200 hover:border-sky-300 hover:shadow-md transition-all flex items-start gap-3 group"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 group-hover:bg-sky-600 group-hover:text-white transition-colors">
                       <Mail className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
@@ -977,9 +1127,9 @@ export default function HomePage() {
                     href="https://wa.me/6282185903635"
                     target="_blank"
                     rel="noreferrer"
-                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/60 border border-slate-200 hover:border-emerald-300 hover:shadow-md transition-all flex items-start gap-3 group"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                       <MessageCircle className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
@@ -994,9 +1144,9 @@ export default function HomePage() {
                     href="https://github.com/wahyusmkte"
                     target="_blank"
                     rel="noreferrer"
-                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all flex items-start gap-3 group"
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-400 hover:shadow-md transition-all flex items-start gap-3 group"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center shrink-0 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-slate-200 text-slate-800 flex items-center justify-center shrink-0 group-hover:bg-slate-900 group-hover:text-white transition-colors">
                       <GithubIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
@@ -1011,9 +1161,9 @@ export default function HomePage() {
                     href="https://www.instagram.com/wahyurahmat55/"
                     target="_blank"
                     rel="noreferrer"
-                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-pink-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-pink-50/60 border border-slate-200 hover:border-pink-300 hover:shadow-md transition-all flex items-start gap-3 group"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-colors">
                       <InstagramIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
@@ -1028,9 +1178,9 @@ export default function HomePage() {
                     href="https://www.facebook.com/wahyurahmat.hidayat.399"
                     target="_blank"
                     rel="noreferrer"
-                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all flex items-start gap-3 group"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
                       <FacebookIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
@@ -1045,9 +1195,9 @@ export default function HomePage() {
                     href="https://www.youtube.com/@WahyuRahmatHidayat-f3h"
                     target="_blank"
                     rel="noreferrer"
-                    className="p-4 rounded-2xl bg-white border border-slate-200 hover:border-red-300 hover:shadow-md transition-all flex items-start gap-3 group"
+                    className="p-4 rounded-2xl bg-slate-50 hover:bg-red-50/60 border border-slate-200 hover:border-red-300 hover:shadow-md transition-all flex items-start gap-3 group"
                   >
-                    <div className="h-10 w-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white transition-colors">
+                    <div className="h-10 w-10 rounded-xl bg-red-100 text-red-600 flex items-center justify-center shrink-0 group-hover:bg-red-600 group-hover:text-white transition-colors">
                       <YoutubeIcon className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
@@ -1125,16 +1275,16 @@ export default function HomePage() {
       </section>
 
       {/* ========================================================================= */}
-      {/* 7. FOOTER: LOGO KIRI, SOFT BACKGROUND, & TRENDY OVERSIZED TYPOGRAPHY "TEKAJE" */}
+      {/* 7. FOOTER: LOGO KIRI, SOFT BACKGROUND, & LEGO-STYLE "TEKAJE" BANNER */}
       {/* ========================================================================= */}
-      <footer className="bg-slate-900 text-slate-400 text-xs border-t border-slate-800 pt-16 pb-8 overflow-hidden relative">
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-12">
+      <footer className="bg-slate-800 text-slate-300 text-xs border-t border-slate-700 pt-16 pb-8 overflow-hidden relative">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-10 space-y-10">
           {/* Main Footer Columns */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
             {/* Paling Kiri: Logo TEKAJE + Identitas Sekolah */}
             <div className="lg:col-span-5 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="relative h-12 w-12 rounded-2xl bg-white p-1 border border-slate-700 shadow-sm flex items-center justify-center overflow-hidden">
+                <div className="relative h-12 w-12 rounded-2xl bg-white p-1 border border-slate-600 shadow-sm flex items-center justify-center overflow-hidden">
                   <Image
                     src="/logo-tekaje.png"
                     alt="Logo TEKAJE"
@@ -1153,12 +1303,12 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+              <p className="text-xs text-slate-300 leading-relaxed max-w-sm">
                 Portal pembelajaran dan praktikum virtual mandiri Teknik Komputer &amp; Jaringan. Membina generasi teknisi andal berbasis standar industri teknologi cloud dan telekomunikasi.
               </p>
 
-              <div className="text-[11px] text-slate-400 space-y-1">
-                <p>📍 Jl. Purnawirawan No. 1, Gading Rejo, Pringsewu, Lampung</p>
+              <div className="text-[11px] text-slate-300 space-y-1 font-medium">
+                <p>📍 Jl. Raya Gadingrejo, Kab. Pringsewu, Lampung</p>
                 <p>✉️ wahyu@smktelkom-lpg.sch.id &bull; 📞 0821-8590-3635</p>
               </div>
             </div>
@@ -1168,7 +1318,7 @@ export default function HomePage() {
               <h5 className="font-bold text-white text-xs uppercase tracking-wider">
                 Navigasi Cepat
               </h5>
-              <ul className="space-y-2 text-xs">
+              <ul className="space-y-2 text-xs text-slate-300">
                 <li>
                   <a href="#profil" className="hover:text-white transition-colors">
                     Profil Pendidik
@@ -1189,11 +1339,13 @@ export default function HomePage() {
                     Daftar Kelas Praktikum
                   </a>
                 </li>
-                <li>
-                  <Link href="/manajemen-guru" className="hover:text-white transition-colors text-indigo-400">
-                    Portal Manajemen Guru
-                  </Link>
-                </li>
+                {user.isLoggedIn && user.role === "guru" && (
+                  <li>
+                    <Link href="/manajemen-guru" className="hover:text-white transition-colors text-indigo-400 font-bold">
+                      Portal Manajemen Guru
+                    </Link>
+                  </li>
+                )}
               </ul>
             </div>
 
@@ -1205,14 +1357,14 @@ export default function HomePage() {
               <div className="space-y-2 text-xs">
                 <Link
                   href="/kelas/cloud-computing"
-                  className="block p-3 rounded-2xl bg-slate-800/80 border border-slate-700/60 hover:border-sky-500 transition-colors"
+                  className="block p-3 rounded-2xl bg-slate-700/60 border border-slate-600 hover:border-sky-400 transition-colors"
                 >
                   <div className="font-bold text-white">Cloud Computing (Aktif)</div>
-                  <div className="text-[11px] text-slate-400">
+                  <div className="text-[11px] text-slate-300">
                     Virtualisasi KVM, VirtualBox, &amp; Ubuntu Server 22.04 LTS
                   </div>
                 </Link>
-                <div className="p-3 rounded-2xl bg-slate-800/40 border border-slate-800 text-slate-500">
+                <div className="p-3 rounded-2xl bg-slate-700/30 border border-slate-700 text-slate-400">
                   <div className="font-semibold">Administrasi Server (ASJ) &bull; Segera Hadir</div>
                 </div>
               </div>
@@ -1220,28 +1372,26 @@ export default function HomePage() {
           </div>
 
           {/* Copyright bar */}
-          <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+          <div className="pt-6 border-t border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
             <div>
               &copy; {new Date().getFullYear()} TEKAJE LABS &bull; SMK Telkom Lampung &bull; Pendidik: Wahyu Rahmat Hidayat, S.Kom.
             </div>
             <div className="flex items-center gap-4">
-              <a href="https://github.com/wahyusmkte" target="_blank" rel="noreferrer" className="hover:text-slate-300">
+              <a href="https://github.com/wahyusmkte" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 GitHub
               </a>
-              <a href="https://instagram.com/wahyurahmat55" target="_blank" rel="noreferrer" className="hover:text-slate-300">
+              <a href="https://instagram.com/wahyurahmat55" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 Instagram
               </a>
-              <a href="https://youtube.com/@WahyuRahmatHidayat-f3h" target="_blank" rel="noreferrer" className="hover:text-slate-300">
+              <a href="https://youtube.com/@WahyuRahmatHidayat-f3h" target="_blank" rel="noreferrer" className="hover:text-white transition-colors">
                 YouTube
               </a>
             </div>
           </div>
 
-          {/* TRENDY OVERSIZED TYPOGRAPHY FOOTER: "TEKAJE" */}
-          <div className="pt-4 select-none pointer-events-none">
-            <h1 className="text-center font-black tracking-tighter text-slate-800/40 text-7xl sm:text-9xl md:text-[160px] lg:text-[230px] leading-none uppercase font-mono transition-colors">
-              TEKAJE
-            </h1>
+          {/* LEGO STYLE "TEKAJE" FOOTER BANNER */}
+          <div className="pt-4 border-t border-slate-700/50">
+            <LegoTekajeBanner />
           </div>
         </div>
       </footer>
