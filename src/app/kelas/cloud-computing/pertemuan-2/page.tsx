@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import LabImage from "@/components/LabImage";
 import InteractiveLabTerminalPtm2 from "@/components/InteractiveLabTerminalPtm2";
 import GuidedStepperHeader from "@/components/GuidedStepperHeader";
@@ -43,8 +44,10 @@ import {
 } from "lucide-react";
 
 export default function PertemuanDuaPage() {
+  const router = useRouter();
   const {
     user,
+    isAuthReady,
     openLoginModal,
     getProgress,
     setPreTestResult,
@@ -56,6 +59,12 @@ export default function PertemuanDuaPage() {
     teacherBypassLocks,
     resetProgress,
   } = useAuth();
+
+  useEffect(() => {
+    if (isAuthReady && !user.isLoggedIn) {
+      router.push("/login?redirect=/kelas/cloud-computing/pertemuan-2");
+    }
+  }, [isAuthReady, user.isLoggedIn, router]);
 
   const progress = getProgress("pertemuan-2");
   const [currentStep, setCurrentStep] = useState(progress.currentStep || 1);
@@ -217,6 +226,31 @@ export default function PertemuanDuaPage() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  if (!isAuthReady || !user.isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex flex-col justify-center items-center p-4 selection:bg-indigo-100 selection:text-indigo-900">
+        <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-xl text-center max-w-md w-full space-y-4">
+          <div className="h-14 w-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto shadow-inner">
+            <Lock className="h-7 w-7" />
+          </div>
+          <h2 className="text-lg font-bold text-slate-900">Mengalihkan ke Halaman Login...</h2>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            Anda belum login ke sistem. Anda sedang dialihkan ke portal login siswa SMK Telkom Lampung untuk membuka materi Pertemuan 02 ini.
+          </p>
+          <div className="pt-2">
+            <Link
+              href="/login?redirect=/kelas/cloud-computing/pertemuan-2"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all"
+            >
+              <span>Klik di sini untuk Login</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-indigo-100 selection:text-indigo-900 pb-24 sm:pb-16">

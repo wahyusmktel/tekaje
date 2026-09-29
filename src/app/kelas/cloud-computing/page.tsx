@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import UserNavPill from "@/components/UserNavPill";
 import {
   Cloud,
@@ -21,6 +23,17 @@ import {
 } from "lucide-react";
 
 export default function CloudComputingSyllabusPage() {
+  const { user, openLoginModal } = useAuth();
+  const router = useRouter();
+
+  const handleOpenMeeting = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    if (!user.isLoggedIn) {
+      router.push(`/login?redirect=${encodeURIComponent(href)}`);
+      return;
+    }
+    router.push(href);
+  };
   const syllabusList = [
     {
       pertemuan: 1,
@@ -275,13 +288,13 @@ export default function CloudComputingSyllabusPage() {
                   Lengkap dengan panduan hands-on lab, screenshot aplikasi, dan tombol salin 1-klik untuk perintah Linux.
                 </p>
 
-                <Link
-                  href="/kelas/cloud-computing/pertemuan-1"
-                  className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-semibold text-xs transition-all shadow-md"
+                <button
+                  onClick={(e) => handleOpenMeeting(e, "/kelas/cloud-computing/pertemuan-1")}
+                  className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-semibold text-xs transition-all shadow-md cursor-pointer"
                 >
                   <span>Mulai Belajar Pertemuan 1</span>
                   <ArrowRight className="h-4 w-4" />
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -305,6 +318,29 @@ export default function CloudComputingSyllabusPage() {
               *Materi dikembangkan secara bertahap oleh guru pengampu
             </p>
           </div>
+
+          {/* Login Required Notice for Students */}
+          {!user.isLoggedIn && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border border-amber-200/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-amber-900 shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="h-9 w-9 rounded-xl bg-amber-200/80 text-amber-800 flex items-center justify-center shrink-0">
+                  <Lock className="h-4 w-4" />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">Perhatian: Siswa Wajib Login Terlebih Dahulu</p>
+                  <p className="text-[11px] text-amber-800">
+                    Untuk membuka materi pertemuan dan praktikum lab, silakan login dengan <b>Username &amp; Password</b> yang telah dibagikan oleh guru.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => router.push("/login?redirect=/kelas/cloud-computing")}
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold transition-all shadow-xs shrink-0 cursor-pointer text-center"
+              >
+                Masuk Akun Siswa Sekarang
+              </button>
+            </div>
+          )}
 
           {/* List of Meetings */}
           <div className="space-y-5">
@@ -375,13 +411,13 @@ export default function CloudComputingSyllabusPage() {
                     </span>
 
                     {item.active ? (
-                      <Link
-                        href={item.href}
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs shadow-sm transition-all"
+                      <button
+                        onClick={(e) => handleOpenMeeting(e, item.href)}
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-xs shadow-sm transition-all cursor-pointer"
                       >
                         <span>Buka Materi Pertemuan {item.pertemuan}</span>
                         <ArrowRight className="h-4 w-4" />
-                      </Link>
+                      </button>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400">
                         <Lock className="h-3.5 w-3.5" />

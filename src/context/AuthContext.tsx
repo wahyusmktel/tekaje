@@ -45,6 +45,7 @@ export interface StudentSubmission {
 
 interface AuthContextType {
   user: UserProfile;
+  isAuthReady: boolean;
   isLoginModalOpen: boolean;
   openLoginModal: () => void;
   closeLoginModal: () => void;
@@ -157,6 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isAuthReady, setIsAuthReady] = useState(false);
   const [teacherBypassLocks, setTeacherBypassLocks] = useState(false);
   const [progressData, setProgressData] = useState<Record<string, StudentProgress>>({});
   const [submissions, setSubmissions] = useState<StudentSubmission[]>(defaultSubmissions);
@@ -180,6 +182,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       console.error("Failed to load local storage state", e);
+    } finally {
+      setIsAuthReady(true);
     }
   }, []);
 
@@ -396,6 +400,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        isAuthReady,
         isLoginModalOpen,
         openLoginModal: () => setIsLoginModalOpen(true),
         closeLoginModal: () => setIsLoginModalOpen(false),
