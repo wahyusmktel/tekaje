@@ -31,3 +31,59 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Print styling for certificate isolation */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  header,
+  footer,
+  nav,
+  button,
+  .no-print,
+  [data-no-print] {
+    display: none !important;
+  }
+
+  /* When printing directly on the certificate page (e.g. Ctrl+P) */
+  body:has(#certificate-print-area) {
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  body:has(#certificate-print-area) * {
+    visibility: hidden;
+  }
+
+  body:has(#certificate-print-area) #certificate-print-area,
+  body:has(#certificate-print-area) #certificate-print-area * {
+    visibility: visible;
+  }
+
+  body:has(#certificate-print-area) #certificate-print-area {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    margin: auto !important;
+    width: 96% !important;
+    max-width: 960px !important;
+    height: fit-content !important;
+    box-shadow: none !important;
+    border: 6px double #334155 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+}
+

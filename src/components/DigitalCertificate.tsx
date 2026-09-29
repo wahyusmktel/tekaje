@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useState } from "react";
 import {
   Award,
   CheckCircle2,
@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   GraduationCap,
   Calendar,
+  Loader2,
 } from "lucide-react";
 
 interface CertificateProps {
@@ -29,6 +30,8 @@ export default function DigitalCertificate({
   finalScore,
   certifiedAt,
 }: CertificateProps) {
+  const [isPrinting, setIsPrinting] = useState(false);
+
   const getPredicate = (score: number) => {
     if (score >= 90) return "Sangat Memuaskan (A)";
     if (score >= 80) return "Memuaskan (B+)";
@@ -37,7 +40,111 @@ export default function DigitalCertificate({
   };
 
   const handlePrint = () => {
-    window.print();
+    setIsPrinting(true);
+    const printArea = document.getElementById("certificate-print-area");
+    if (!printArea) {
+      window.print();
+      setIsPrinting(false);
+      return;
+    }
+
+    // Remove any previously created print iframe
+    const oldFrame = document.getElementById("certificate-print-frame");
+    if (oldFrame) {
+      oldFrame.remove();
+    }
+
+    const iframe = document.createElement("iframe");
+    iframe.id = "certificate-print-frame";
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    iframe.style.opacity = "0";
+    iframe.style.pointerEvents = "none";
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) {
+      window.print();
+      setIsPrinting(false);
+      return;
+    }
+
+    // Gather all stylesheets and inline styles from parent document
+    const styles = Array.from(document.querySelectorAll("link[rel='stylesheet'], style"))
+      .map((el) => el.outerHTML)
+      .join("\n");
+
+    doc.open();
+    doc.write(`
+      <!DOCTYPE html>
+      <html lang="id">
+        <head>
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Sertifikat Kelulusan - ${studentName || "Siswa"}</title>
+          ${styles}
+          <style>
+            @page {
+              size: A4 landscape;
+              margin: 8mm;
+            }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color-adjust: exact !important;
+              box-sizing: border-box !important;
+            }
+            html, body {
+              margin: 0 !important;
+              padding: 0 !important;
+              background: #ffffff !important;
+              min-height: 100vh !important;
+              display: flex !important;
+              align-items: center !important;
+              justify-content: center !important;
+              font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            }
+            #certificate-print-area {
+              width: 100% !important;
+              max-width: 960px !important;
+              margin: auto !important;
+              box-shadow: none !important;
+              border: 6px double #334155 !important;
+              page-break-inside: avoid !important;
+              break-inside: avoid !important;
+            }
+          </style>
+        </head>
+        <body>
+          <div style="width: 100%; display: flex; align-items: center; justify-content: center; padding: 8px;">
+            ${printArea.outerHTML}
+          </div>
+        </body>
+      </html>
+    `);
+    doc.close();
+
+    // Small delay to allow fonts and styles inside iframe to settle before printing
+    setTimeout(() => {
+      try {
+        if (iframe.contentWindow) {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        }
+      } catch (err) {
+        console.error("Gagal membuka dialog cetak pada iframe, fallback ke window.print:", err);
+        window.print();
+      } finally {
+        setIsPrinting(false);
+        setTimeout(() => {
+          iframe.remove();
+        }, 3000);
+      }
+    }, 400);
   };
 
   return (
@@ -143,15 +250,24 @@ export default function DigitalCertificate({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-center gap-3">
+      {/* Action Buttons & Helpful Tip */}
+      <div className="flex flex-col items-center justify-center gap-3 no-print">
         <button
           onClick={handlePrint}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+          disabled={isPrinting}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer disabled:opacity-60"
         >
-          <Printer className="h-4 w-4" />
-          <span>Cetak / Simpan PDF Sertifikat</span>
+          {isPrinting ? (
+            <Loader2 className="h-4 w-4 animate-spin text-sky-400" />
+          ) : (
+            <Printer className="h-4 w-4" />
+          )}
+          <span>{isPrinting ? "Mempersiapkan Lembar Sertifikat..." : "Cetak / Simpan PDF Sertifikat"}</span>
         </button>
+
+        <p className="text-[11px] text-slate-500 text-center max-w-md">
+          💡 <b>Panduan:</b> Klik tombol di atas untuk mencetak atau memilih <b>&ldquo;Save as PDF&rdquo;</b>. Hanya area sertifikat yang akan dicetak dalam orientasi mendatar (Landscape).
+        </p>
       </div>
     </div>
   );
