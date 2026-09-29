@@ -32,18 +32,26 @@ body {
   background: #94a3b8;
 }
 
-/* Print styling for certificate isolation */
+/* Print styling for certificate isolation and full A4 layout */
 @media print {
   @page {
-    size: A4 landscape;
-    margin: 8mm;
+    size: 297mm 210mm landscape;
+    margin: 0;
   }
 
+  html,
   body {
+    width: 297mm !important;
+    height: 210mm !important;
+    max-width: 297mm !important;
+    max-height: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #ffffff !important;
     color: #0f172a !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    overflow: hidden !important;
   }
 
   header,
@@ -57,8 +65,13 @@ body {
 
   /* When printing directly on the certificate page (e.g. Ctrl+P) */
   body:has(#certificate-print-area) {
-    overflow: visible !important;
+    overflow: hidden !important;
     background: #ffffff !important;
+    padding: 8mm !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   body:has(#certificate-print-area) * {
@@ -72,18 +85,29 @@ body {
 
   body:has(#certificate-print-area) #certificate-print-area {
     position: fixed !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: 0 !important;
-    bottom: 0 !important;
-    margin: auto !important;
-    width: 96% !important;
-    max-width: 960px !important;
-    height: fit-content !important;
+    left: 8mm !important;
+    top: 8mm !important;
+    width: calc(297mm - 16mm) !important;
+    height: calc(210mm - 16mm) !important;
+    max-width: none !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 24px 36px !important;
+    box-sizing: border-box !important;
     box-shadow: none !important;
     border: 6px double #334155 !important;
+    border-radius: 18px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    overflow: hidden !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+  }
+
+  body:has(#certificate-print-area) #certificate-print-area > * + * {
+    margin-top: 0 !important;
   }
 }
 

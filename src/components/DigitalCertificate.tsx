@@ -89,8 +89,8 @@ export default function DigitalCertificate({
           ${styles}
           <style>
             @page {
-              size: A4 landscape;
-              margin: 8mm;
+              size: 297mm 210mm landscape;
+              margin: 0;
             }
             * {
               -webkit-print-color-adjust: exact !important;
@@ -99,30 +99,46 @@ export default function DigitalCertificate({
               box-sizing: border-box !important;
             }
             html, body {
+              width: 297mm !important;
+              height: 210mm !important;
+              max-width: 297mm !important;
+              max-height: 210mm !important;
               margin: 0 !important;
-              padding: 0 !important;
+              padding: 8mm !important;
               background: #ffffff !important;
-              min-height: 100vh !important;
+              box-sizing: border-box !important;
               display: flex !important;
               align-items: center !important;
               justify-content: center !important;
+              overflow: hidden !important;
               font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
             }
             #certificate-print-area {
-              width: 100% !important;
-              max-width: 960px !important;
-              margin: auto !important;
+              width: calc(297mm - 16mm) !important;
+              height: calc(210mm - 16mm) !important;
+              max-width: 100% !important;
+              max-height: 100% !important;
+              min-height: 0 !important;
+              margin: 0 auto !important;
+              padding: 24px 36px !important;
+              box-sizing: border-box !important;
               box-shadow: none !important;
               border: 6px double #334155 !important;
+              border-radius: 18px !important;
+              display: flex !important;
+              flex-direction: column !important;
+              justify-content: space-between !important;
+              overflow: hidden !important;
               page-break-inside: avoid !important;
               break-inside: avoid !important;
+            }
+            #certificate-print-area > * + * {
+              margin-top: 0 !important;
             }
           </style>
         </head>
         <body>
-          <div style="width: 100%; display: flex; align-items: center; justify-content: center; padding: 8px;">
-            ${printArea.outerHTML}
-          </div>
+          ${printArea.outerHTML}
         </body>
       </html>
     `);
@@ -226,7 +242,7 @@ export default function DigitalCertificate({
         </div>
 
         {/* Signature & Date */}
-        <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6 max-w-2xl mx-auto">
+        <div className="pt-4 border-t border-slate-100 flex flex-row items-end justify-between gap-6 w-full max-w-3xl mx-auto">
           <div className="text-left text-xs text-slate-500 space-y-1">
             <div className="flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5 text-slate-400" />
@@ -235,7 +251,7 @@ export default function DigitalCertificate({
             <div>Verifikasi Digital: <b>VALID &bull; SMK Telkom</b></div>
           </div>
 
-          <div className="text-center sm:text-right space-y-1">
+          <div className="text-right space-y-0.5">
             <div className="text-xs text-slate-500">Guru Pengampu Mata Pelajaran,</div>
             <div className="font-script text-base text-sky-700 font-bold italic pt-1">
               Wahyu Rahmat Hidayat
