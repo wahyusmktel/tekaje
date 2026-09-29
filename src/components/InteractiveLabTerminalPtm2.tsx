@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Info,
   Maximize2,
+  Minimize2,
   Copy,
   CornerDownLeft,
 } from "lucide-react";
@@ -119,11 +120,47 @@ export default function InteractiveLabTerminalPtm2() {
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
   const [isExecuting, setIsExecuting] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const terminalEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const completedCount = missions.filter((m) => m.completed).length;
   const progressPercent = Math.round((completedCount / missions.length) * 100);
+
+  const toggleFullscreen = () => {
+    if (!isFullscreen) {
+      setIsFullscreen(true);
+      if (containerRef.current?.requestFullscreen) {
+        containerRef.current.requestFullscreen().catch(() => {});
+      }
+    } else {
+      setIsFullscreen(false);
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsFullscreen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isFullscreen]);
 
   useEffect(() => {
     terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -330,21 +367,33 @@ export default function InteractiveLabTerminalPtm2() {
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+    <div
+      ref={containerRef}
+      className={`transition-all ${
+        isFullscreen
+          ? "fixed inset-0 z-[9999] w-screen h-screen bg-slate-950 flex flex-col overflow-hidden m-0 p-0 rounded-none border-none shadow-2xl"
+          : "bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden relative"
+      }`}
+    >
       {/* Header Bar */}
-      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 p-6 text-white flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 p-4 sm:p-5 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="h-11 w-11 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-400">
-            <Terminal className="h-6 w-6" />
+          <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-400 shrink-0">
+            <Terminal className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="font-extrabold text-lg text-white">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="font-extrabold text-base sm:text-lg text-white">
                 Web Hands-on Lab: Verifikasi Pasca-Instalasi OS
               </h3>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
                 Pertemuan 2 Simulator
               </span>
+              {isFullscreen && (
+                <span className="text-[10px] font-mono px-2 py-0.5 bg-indigo-950 text-indigo-300 border border-indigo-700 hidden md:inline">
+                  MODE FULLSCREEN AKTIF
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-300">
               Praktik mandiri validasi sistem baru &bull; Ubuntu Server 22.04 LTS (CLI)
@@ -352,13 +401,13 @@ export default function InteractiveLabTerminalPtm2() {
           </div>
         </div>
 
-        {/* Progress & Reset */}
-        <div className="flex items-center gap-4">
-          <div className="text-right">
+        {/* Progress, Fullscreen Toggle & Reset */}
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="text-right hidden sm:block">
             <div className="text-[11px] text-slate-300">
               Progres Misi: <b>{completedCount}</b> / {missions.length} Selesai
             </div>
-            <div className="w-36 h-2 rounded-full bg-slate-700 overflow-hidden mt-1">
+            <div className="w-32 h-1.5 rounded-full bg-slate-700 overflow-hidden mt-1">
               <div
                 className="h-full bg-gradient-to-r from-indigo-400 to-emerald-400 transition-all duration-300"
                 style={{ width: `${progressPercent}%` }}
@@ -366,21 +415,48 @@ export default function InteractiveLabTerminalPtm2() {
             </div>
           </div>
 
+          {/* Fullscreen Button */}
+          <button
+            onClick={toggleFullscreen}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer shadow-sm ${
+              isFullscreen
+                ? "bg-rose-600 hover:bg-rose-500 text-white border border-rose-500"
+                : "bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-500"
+            }`}
+            title={isFullscreen ? "Keluar dari mode fullscreen (Esc)" : "Buka mode layar penuh (Fullscreen)"}
+          >
+            {isFullscreen ? (
+              <>
+                <Minimize2 className="h-3.5 w-3.5" />
+                <span>Keluar Fullscreen</span>
+              </>
+            ) : (
+              <>
+                <Maximize2 className="h-3.5 w-3.5" />
+                <span>Fullscreen</span>
+              </>
+            )}
+          </button>
+
           <button
             onClick={handleResetLab}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold transition-all cursor-pointer"
             title="Reset ulang progress lab"
           >
             <RotateCcw className="h-3.5 w-3.5" />
-            <span>Reset</span>
+            <span className="hidden sm:inline">Reset</span>
           </button>
         </div>
       </div>
 
       {/* Split Pane: Left Missions Checklist, Right Terminal */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
+      <div className={`grid grid-cols-1 lg:grid-cols-12 ${
+        isFullscreen ? "flex-1 min-h-0 overflow-hidden" : "min-h-[580px]"
+      }`}>
         {/* LEFT PANE: MISSIONS CHECKLIST */}
-        <div className="lg:col-span-5 bg-slate-50 border-r border-slate-200 p-5 sm:p-6 flex flex-col justify-between space-y-4">
+        <div className={`lg:col-span-5 bg-slate-50 border-r border-slate-200 p-4 sm:p-6 flex flex-col justify-between space-y-4 ${
+          isFullscreen ? "overflow-y-auto max-h-full" : ""
+        }`}>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
@@ -466,7 +542,9 @@ export default function InteractiveLabTerminalPtm2() {
 
         {/* RIGHT PANE: INTERACTIVE TERMINAL */}
         <div
-          className="lg:col-span-7 bg-slate-950 text-slate-100 p-4 sm:p-6 flex flex-col justify-between font-mono text-xs sm:text-sm cursor-text"
+          className={`lg:col-span-7 bg-slate-950 text-slate-100 p-4 sm:p-6 flex flex-col justify-between font-mono text-xs sm:text-sm cursor-text ${
+            isFullscreen ? "overflow-hidden h-full flex-1" : ""
+          }`}
           onClick={() => inputRef.current?.focus()}
         >
           {/* Top Bar inside terminal */}
@@ -483,7 +561,9 @@ export default function InteractiveLabTerminalPtm2() {
           </div>
 
           {/* History Scroll Area */}
-          <div className="flex-1 overflow-y-auto max-h-[460px] space-y-2 pr-1 select-text">
+          <div className={`flex-1 overflow-y-auto space-y-2 pr-1 select-text ${
+            isFullscreen ? "max-h-none h-full" : "max-h-[460px]"
+          }`}>
             {terminalHistory.map((item) => (
               <div key={item.id} className="leading-relaxed whitespace-pre-wrap break-all">
                 {item.type === "input" && (
