@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import LabImage from "@/components/LabImage";
+import InteractiveLabTerminal from "@/components/InteractiveLabTerminal";
 import {
   Terminal,
   Copy,
@@ -240,10 +241,18 @@ export default function PertemuanSatuPage() {
 
           <div className="flex items-center gap-2">
             <a
+              href="#hands-on-terminal"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-all shadow-xs"
+            >
+              <Terminal className="h-3.5 w-3.5 text-sky-600" />
+              <span>Web Simulator Lab</span>
+            </a>
+
+            <a
               href="#panduan-praktikum"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-white bg-sky-600 hover:bg-sky-500 transition-all shadow-sm"
             >
-              <Terminal className="h-3.5 w-3.5" />
+              <BookOpen className="h-3.5 w-3.5" />
               <span>Panduan Hands-on</span>
             </a>
           </div>
@@ -489,6 +498,26 @@ export default function PertemuanSatuPage() {
               suggestedFileName="gambar1_arsitektur_virtualisasi.png"
             />
           </div>
+        </div>
+      </section>
+
+      {/* INTERACTIVE HANDS-ON LAB WEB TERMINAL */}
+      <section id="hands-on-terminal" className="py-14 bg-white border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="text-xs font-bold uppercase tracking-wider text-sky-600 mb-1 block">
+              Laboratorium Interaktif Berbasis Web
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+              Hands-on Lab Terminal Simulator
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 mt-2">
+              Siswa dapat mempraktikkan perintah Ubuntu Server secara langsung di browser ini tanpa perlu instalasi awal.
+              Selesaikan 5 misi praktikum berikut dan perhatikan validasi otomatisnya!
+            </p>
+          </div>
+
+          <InteractiveLabTerminal />
         </div>
       </section>
 
