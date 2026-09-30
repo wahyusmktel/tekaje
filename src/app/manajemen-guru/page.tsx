@@ -42,7 +42,8 @@ interface StudentItem {
 
 const AVAILABLE_COURSES = [
   { slug: "cloud-computing", name: "Cloud Computing (Komputasi Awan)" },
-  { slug: "administrasi-server", name: "Administrasi Server Jaringan (ASJ)" },
+  { slug: "administrasi-sistem-jaringan", name: "Administrasi Sistem Jaringan (ASJ)" },
+  { slug: "administrasi-server", name: "Administrasi Server Jaringan (Legacy)" },
   { slug: "administrasi-infrastruktur", name: "Administrasi Infrastruktur Jaringan (AIJ)" },
   { slug: "cyber-security", name: "Keamanan Jaringan & Cyber Security" },
 ];

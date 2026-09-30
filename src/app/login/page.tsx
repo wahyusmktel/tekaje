@@ -810,7 +810,7 @@ function LoginContent() {
                         <span>KONTROL PENDIDIK (VLAN 99)</span>
                       </div>
                       <p className="text-[11px] text-indigo-200">
-                        Otorisasi akses guru pengampu (Wahyu Rahmat Hidayat, S.Kom.) untuk manajemen kelas, siswa, dan rekapitulasi penilaian.
+                        Otorisasi akses guru pengampu (Wahyu Rahmat Hidayat, S.Kom. &amp; Hermawan Rijal Arasy, S.Kom.) untuk manajemen kelas, siswa, dan rekapitulasi penilaian.
                       </p>
                     </div>
 
@@ -818,7 +818,7 @@ function LoginContent() {
                       <label className="text-slate-300 font-bold">USERNAME_GURU</label>
                       <input
                         type="text"
-                        placeholder="wahyu"
+                        placeholder="hermawan / wahyu"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 text-white text-xs focus:border-indigo-400 focus:outline-none"

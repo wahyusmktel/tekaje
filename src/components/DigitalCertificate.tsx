@@ -15,6 +15,9 @@ interface CertificateProps {
   studentName: string;
   studentClass: string;
   studentNis: string;
+  courseName?: string;
+  teacherName?: string;
+  teacherNip?: string;
   meetingNumber: number;
   meetingTitle: string;
   finalScore: number;
@@ -25,6 +28,9 @@ export default function DigitalCertificate({
   studentName,
   studentClass,
   studentNis,
+  courseName = "Cloud Computing",
+  teacherName = "Wahyu Rahmat Hidayat, S.Kom.",
+  teacherNip = "198801012015011001",
   meetingNumber,
   meetingTitle,
   finalScore,
@@ -217,7 +223,7 @@ export default function DigitalCertificate({
         {/* Meeting Box */}
         <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 max-w-xl mx-auto space-y-1">
           <div className="text-xs font-bold text-sky-600 uppercase tracking-wider">
-            Mata Pelajaran: Cloud Computing &bull; Pertemuan {meetingNumber}
+            Mata Pelajaran: {courseName} &bull; Pertemuan {meetingNumber}
           </div>
           <div className="text-sm sm:text-base font-bold text-slate-900">
             {meetingTitle}
@@ -254,13 +260,13 @@ export default function DigitalCertificate({
           <div className="text-right space-y-0.5">
             <div className="text-xs text-slate-500">Guru Pengampu Mata Pelajaran,</div>
             <div className="font-script text-base text-sky-700 font-bold italic pt-1">
-              Wahyu Rahmat Hidayat
+              {teacherName.replace(/,\s*(S\.Kom\.|S\.T\.|M\.Kom\.|M\.T\.)/gi, "")}
             </div>
             <div className="font-bold text-xs text-slate-900">
-              Wahyu Rahmat Hidayat, S.Kom.
+              {teacherName}
             </div>
             <div className="text-[10px] text-slate-400 font-mono">
-              NIP: 198801012015011001
+              NIP: {teacherNip}
             </div>
           </div>
         </div>
