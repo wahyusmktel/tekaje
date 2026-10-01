@@ -824,7 +824,7 @@ export default function PertemuanSatuASJPage() {
           {currentStep === 5 && (
             <div className="space-y-6 animate-fade-in">
               <ApacheSysadminGame
-                alreadyCompleted={Boolean(progress.gamificationCompleted || isStepUnlocked(6))}
+                alreadyCompleted={Boolean(progress.gamificationCompleted)}
                 onComplete={() => {
                   completeGamification("asj-pertemuan-1");
                   goToNextStep(5);

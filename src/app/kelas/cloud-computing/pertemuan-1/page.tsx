@@ -947,7 +947,7 @@ export default function PertemuanSatuPage() {
         {currentStep === 5 && (
           <div className="space-y-6 animate-fade-in">
             <CloudSysadminGame
-              alreadyCompleted={Boolean(progress.gamificationCompleted || isStepUnlocked(6))}
+              alreadyCompleted={Boolean(progress.gamificationCompleted)}
               onComplete={() => {
                 completeGamification("pertemuan-1");
                 goToNextStep(5);

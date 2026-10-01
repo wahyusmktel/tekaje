@@ -84,7 +84,7 @@ export default function UserNavPill() {
                 className="flex items-center gap-2 p-2 rounded-none hover:bg-indigo-50 text-indigo-700 font-semibold transition-colors"
               >
                 <LayoutDashboard className="h-4 w-4" />
-                <span>Dashboard Rekap Nilai</span>
+                <span>Dashboard Guru Kelas</span>
               </Link>
             </>
           )}

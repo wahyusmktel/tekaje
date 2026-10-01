@@ -189,9 +189,8 @@ export default function ApacheSysadminGame({
   onComplete,
   alreadyCompleted = false,
 }: ApacheSysadminGameProps) {
-  const [stage, setStage] = useState<"intro" | "pipeline" | "troubleshoot" | "victory">(
-    alreadyCompleted ? "victory" : "intro"
-  );
+  // Game state: Always start at intro so player can actively play the game
+  const [stage, setStage] = useState<"intro" | "pipeline" | "troubleshoot" | "victory">("intro");
   const [xp, setXp] = useState(alreadyCompleted ? 700 : 0);
   const [lives, setLives] = useState(3);
   const [streak, setStreak] = useState(0);
@@ -371,12 +370,28 @@ export default function ApacheSysadminGame({
               </div>
             </div>
 
-            <div className="pt-4">
+            {alreadyCompleted && (
+              <div className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-200 text-xs flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <span>Anda sudah pernah menyelesaikan quest ini sebelumnya (+{xp} XP). Anda dapat memainkannya kembali untuk mengasah skill atau langsung melihat hasil.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setStage("victory")}
+                  className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shrink-0 cursor-pointer transition-colors"
+                >
+                  Lihat Hasil
+                </button>
+              </div>
+            )}
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 onClick={() => setStage("pipeline")}
                 className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-extrabold text-sm shadow-lg shadow-amber-500/20 active:scale-95 transition-all cursor-pointer inline-flex items-center justify-center gap-2"
               >
-                <span>Mulai Misi 1: Pipeline Architect</span>
+                <span>{alreadyCompleted ? "Mainkan Ulang Quest" : "Mulai Misi 1: Pipeline Architect"}</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
